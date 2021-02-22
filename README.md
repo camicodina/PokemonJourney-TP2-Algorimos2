@@ -1,7 +1,7 @@
 <p align="center"><img width=60% src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/800px-International_Pok%C3%A9mon_logo.svg.png"></p>
 
 
-<h1 align="center">Pokemon Journey</h1>
+<h1 align="center">Journey</h1>
 <h2 align="center">TP2 de Algoritmos y Programación II</h2><br>
 
 
