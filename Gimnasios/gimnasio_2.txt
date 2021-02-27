@@ -1,0 +1,12 @@
+G;Agua;2;id_puntero_funcion
+L;Misty
+P;Staryu
+P;Wailmer
+P;Golduck
+E;Vesi
+P;Magikarp
+P;Horsea
+P;Goldeen
+E;Emma
+P;Seel
+P;Wooper

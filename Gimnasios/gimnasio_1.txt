@@ -1,0 +1,16 @@
+G;Roca;1;id_puntero_funcion
+L;Brock
+P;Geodude;
+P;Onix;
+P;Shieldon;
+E;Roccia
+P;Geodude;
+P;Kabuto;
+E;Norman
+P;Onix;
+P;Ryhorn;
+
+Geodude
+Onix
+Shieldon
+Kabuto

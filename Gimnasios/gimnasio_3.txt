@@ -1,0 +1,12 @@
+G;Lucha;3;id_puntero_funcion
+L;Marcial
+P;Hariyama;
+P;Machoke;
+P;Breloom;
+E;Erwin
+P;Croagunk;
+P;Primeape;
+E;Isabella
+P;Meditite;
+P;Hawlucha;
+P;Makuhita;

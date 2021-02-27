@@ -1,0 +1,13 @@
+G;Fantasma;6;id_puntero_funcion
+L;Fatima
+P;Drifblim
+P;Spiritomb
+P;Dusclops
+P;Mega-Gengar
+E;Conny
+P;Mimikyu
+P;Dusclops
+P;Rotom
+E;Sasha
+P;Gengar 
+P;Trevenant

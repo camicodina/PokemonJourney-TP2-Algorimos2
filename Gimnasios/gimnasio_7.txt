@@ -1,0 +1,14 @@
+G;Hielo;7;id_puntero_funcion
+L;Levi
+P;Lapras
+P;Walrein
+P;Glaceon 
+P;Mega-Abomasnow
+E;Elsa
+P;Weavile
+P;Abosmasnow
+P;Froslass
+E;Freddo
+P;Glaceon 
+P;Vanillish
+P;Vanilluxe

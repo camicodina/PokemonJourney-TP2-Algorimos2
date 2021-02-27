@@ -32,3 +32,6 @@ Durante la elaboración del trabajo también se utilizó valgrind para la depura
 ---
 
 _Camila Codina_
+
+_Agradecimientos especiales:_
+_Los personajes de Attack on Titan, The Promised Neverland, Frozen y Harry Potter que accedieron a ser entrenadores Pokemon en el desarrollo de este juego.)_

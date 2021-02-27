@@ -1,0 +1,14 @@
+G;Volador;5;id_puntero_funcion
+L;Pegasus
+P;Braviary
+P;Crobat
+P;Gliscor
+P;Pidgeot
+E;Alicanto
+P;Tropius 
+P;Peliper 
+P;Talonflame
+E;Felix
+P;Noibat
+P;Pidgeotto
+P;Golbat
