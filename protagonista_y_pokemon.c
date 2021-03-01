@@ -33,12 +33,13 @@ personaje_t* protagonista_crear(const char* ruta_archivo){
     personaje_t* protagonista = calloc(1,sizeof(personaje_t));
     if(!protagonista)return NULL;
 
+    protagonista->mi_nivel=1;
+    
     pokemon_t* mi_primer_pokemon = calloc(1,sizeof(pokemon_t));
     if(!mi_primer_pokemon){
         free(protagonista);
         return NULL;
     }
-    mi_primer_pokemon->nivel=1;
 
     //Abro archivo
     FILE* archivo_protagonista= fopen(ruta_archivo,"r");
@@ -105,17 +106,14 @@ char tipo = (char)fgetc(archivo_personaje);
  * Función auxiliar para crear el conjunto de pokemon para combarir inicial.
  */
 void estado_inicial_party(personaje_t* personaje, pokemon_t* primer_pokemon){
-    if(personaje->cantidad_pokemones <= 6){
-        for(size_t i=0; i < (personaje->cantidad_pokemones); i++){
-            pokemon_t* elemento = lista_elemento_en_posicion(personaje->caja,i);
-            lista_insertar(personaje->party,elemento);
-        }
-    }else{
-        for(size_t i=0; i<6; i++){
-            pokemon_t* elemento = lista_elemento_en_posicion(personaje->caja,i);
-            lista_insertar(personaje->party,elemento);
-        }
+
+    lista_iterador_t* iterador_caja = lista_iterador_crear(personaje->caja);
+    while ((lista_iterador_tiene_siguiente(iterador_caja)) && (personaje->cantidad_pokemones < 6)){ 
+        pokemon_t* pokemon_actual = lista_iterador_elemento_actual(iterador_caja);
+        lista_insertar(personaje->party,pokemon_actual);
+        lista_iterador_avanzar(iterador_caja);
     }
+    lista_iterador_destruir(iterador_caja);
 }
 
 
@@ -176,7 +174,6 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
                 return NULL;
             }
             otro_pokemon = aux_otro_pokemon;
-            otro_pokemon->nivel=1;
             lista_insertar(personaje->caja, otro_pokemon);
             (personaje->cantidad_pokemones)++;
         }else{
@@ -203,12 +200,35 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
 
 
 void mostrar_pokemon(pokemon_t* pokemon){
-    printf("\n");
-    printf("-----------------------------------------------------------------\n");
-    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        \n");
     printf("%s        %i               %i          %i       \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa);
     printf("-----------------------------------------------------------------\n");
     printf("\n");
+}
+
+void mostrar_pokemon_party(personaje_t* protagonista){
+    lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
+    printf("POKEMON EN PARTY:\n");
+    printf("-----------------------------------------------------------------\n");
+    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        \n");
+    while(lista_iterador_tiene_siguiente(iterador_party)){
+        pokemon_t* pokemon_actual_p = lista_iterador_elemento_actual(iterador_party);
+        mostrar_pokemon(pokemon_actual_p);
+        lista_iterador_avanzar(iterador_party);
+    }
+    lista_iterador_destruir(iterador_party);
+}
+
+void mostrar_pokemon_caja(personaje_t* protagonista){
+    lista_iterador_t* iterador_caja = lista_iterador_crear(protagonista->caja);
+    printf("POKEMON EN CAJA:\n");
+    printf("-----------------------------------------------------------------\n");
+    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        \n");
+    while(lista_iterador_tiene_siguiente(iterador_caja)){
+        pokemon_t* pokemon_actual_c = lista_iterador_elemento_actual(iterador_caja);
+        mostrar_pokemon(pokemon_actual_c);
+        lista_iterador_avanzar(iterador_caja);
+    }
+    lista_iterador_destruir(iterador_caja);
 }
 
 /*
@@ -218,16 +238,11 @@ void protagonista_mostrar(personaje_t* protagonista){
     if(!protagonista) return;
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
     printf("NOMBRE: %s\n",protagonista->nombre);
-    printf("POKEMON EN CAJA:\n");
-    for(int i=0; i < (protagonista->cantidad_pokemones); i++){
-            pokemon_t* elemento_caja = lista_elemento_en_posicion(protagonista->caja,i);
-		    mostrar_pokemon(elemento_caja);
-   }
-   printf("POKEMON EN PARTY:\n");
-    for(int i=0; i<6; i++){
-            pokemon_t* elemento_party = lista_elemento_en_posicion(protagonista->party,i);
-		    mostrar_pokemon(elemento_party);
-    }
+    printf("NIVEL: %i\n",protagonista->mi_nivel);
+    printf("CANTIDAD DE MEDALLAS OBTENIDAS: %i\n",protagonista->mis_medallas);
+    printf("\n");
+    mostrar_pokemon_party(protagonista);
+    mostrar_pokemon_caja(protagonista);
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
 }
 
@@ -251,19 +266,18 @@ void pokemon_destruir(pokemon_t* pokemon){
     free(pokemon);
 }
 
-
 /*
  * Destruye el jugador liberando la memoria reservada por el mismo.
  */
 void protagonista_destruir(personaje_t* protagonista){
     if(!protagonista) return;
-    while(!lista_vacia(protagonista->caja){
-        pokemon_t pokemon_a_borrar = lista_primero(protagonista->caja);
+    while(!lista_vacia(protagonista->caja)){
+        pokemon_t* pokemon_a_borrar = lista_primero(protagonista->caja);
         pokemon_destruir(pokemon_a_borrar);
         lista_borrar_de_posicion(protagonista->caja,0);
     }
-    lista_destruir(personaje->pokemon_obtenidos);
-    lista_destruir(personaje->pokemon_para_combatir);
-    free(personaje);
+    lista_destruir(protagonista->caja);
+    lista_destruir(protagonista->party);
+    free(protagonista);
 }
 

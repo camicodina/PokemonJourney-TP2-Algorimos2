@@ -25,7 +25,7 @@ typedef struct gimnasio{
     char nombre[MAX_NOMBRE];
     int dificultad;
     int id_puntero_funcion;
-    entrenador_t* lider;
+    personaje_t* lider;
     lista_t* entrenadores;
 }gimnasio_t;
 

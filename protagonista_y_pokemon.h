@@ -26,7 +26,6 @@ typedef struct pokemon{
     int velocidad;
     int ataque;
     int defensa;
-    int nivel;
 }pokemon_t;
 
 
@@ -35,6 +34,7 @@ typedef struct personaje{
     lista_t* party;
     lista_t* caja;
     int mis_medallas;
+    int mi_nivel;
     size_t cantidad_pokemones;
 } personaje_t;
 
