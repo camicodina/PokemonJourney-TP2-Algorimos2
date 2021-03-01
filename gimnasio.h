@@ -36,17 +36,17 @@ typedef struct gimnasio{
 
 
 /*
+ * Función que dado un archivo de gimnasio carga un entrenador reservando la memoria 
+ * necesaria para el mismo o NULL en caso de error.
+ */
+entrenador_t* entrenador_crear(const char* ruta_archivo);
+
+
+/*
  * Función que dado un archivo carga un gimnasio reservando la memoria necesaria 
  * para el mismo o NULL en caso de error.
  */
 gimnasio_t* gimnasio_crear(heap_t* heap_gimnasios, const char* ruta_archivo);
-
-
-
-/*
- * Carga los gimnasios para la partida
- */
-void agregar_gimnasios(heap_t* gimnasio);
 
 
 /*

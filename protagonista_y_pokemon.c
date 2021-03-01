@@ -99,7 +99,7 @@ personaje_t* protagonista_crear(const char* ruta_archivo){
     pokemon_t* pokemon;
     tipo = (char)fgetc(archivo_protagonista);
     while(tipo==POKEMON){
-        pokemon_leido = fscanf(archivo_protagonista, FORMATO_LECTURA_POKEMON,pokemon->nombre, &(pokemon->velocidad), &(opokemon->ataque), &(pokemon->defensa));
+        pokemon_leido = fscanf(archivo_protagonista, FORMATO_LECTURA_POKEMON,pokemon->nombre, &(pokemon->velocidad), &(pokemon->ataque), &(pokemon->defensa));
         if(pokemon_leido == 4){
             pokemon_t* otro_pokemon = calloc(1,sizeof(pokemon_t));
             if(!otro_pokemon){
@@ -140,14 +140,6 @@ personaje_t* protagonista_crear(const char* ruta_archivo){
 
     fclose(archivo_protagonista);
     return protagonista;
-
-}
-
-
-/*
- * Carga un personaje para la partida
- */
-void agregar_protagonista(personaje_t* protagonista){
 
 }
 

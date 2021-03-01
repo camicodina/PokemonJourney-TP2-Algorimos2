@@ -46,12 +46,6 @@ personaje_t* protagonista_crear(const char* ruta_archivo);
 
 
 /*
- * Carga un personaje para la partida
- */
-void agregar_protagonista(personaje_t* protagonista);
-
-
-/*
  * Muestra al entrenador con sus pokemon
  */
 void protagonista_mostrar(personaje_t* protagonista);
