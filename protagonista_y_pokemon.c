@@ -252,7 +252,7 @@ void protagonista_mostrar(personaje_t* protagonista){
  * los usados para el combate (party)
  */
 void cambios_party_caja(personaje_t* protagonista){
-
+    
 }
 
 // -------------------------- FUNCIONES DE DESTRUCCION -------------------------- //

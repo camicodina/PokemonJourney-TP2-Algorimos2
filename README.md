@@ -17,17 +17,18 @@ _Trabajo práctico Nº1 de Algoritmos y Programación II, Cátedra Mendez, Facul
 
 Comandos de compilación y ejecución:
 
-> $ gcc *.c -Wall -Werror -Wconversion -std=c99 -o batallas                
-> $ ./batallas (...).txt 
+> $ gcc *.c -Wall -Werror -Wconversion -std=c99 -o gimnasio                
+> $ ./gimnasio 
 
 Durante la elaboración del trabajo también se utilizó valgrind para la depuración de problemas de memoria utilizando el siguiente comando: 
 
-> $ valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./batallas (...).txt 
+> $ valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./gimnasio 
 
 
 ## Contruido con... ⚙
 
-    
+- TDA Heap
+- TDA Lista     
 
 ---
 

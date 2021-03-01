@@ -26,7 +26,7 @@ typedef struct gimnasio{
     int dificultad;
     int id_puntero_funcion;
     personaje_t* lider;
-    lista_t* entrenadores;
+    lista_t* miembros;
 }gimnasio_t;
 
 
@@ -36,7 +36,7 @@ typedef struct gimnasio{
  * Función que dado un archivo carga un gimnasio reservando la memoria necesaria 
  * para el mismo o NULL en caso de error.
  */
-gimnasio_t* gimnasio_crear(heap_t* heap_gimnasios, const char* ruta_archivo);
+gimnasio_t* gimnasio_crear(const char* ruta_archivo);
 
 
 /*

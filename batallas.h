@@ -4,6 +4,14 @@
 #define GANO_PRIMERO 1
 #define GANO_SEGUNDO -1
 
+#include <stdio.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <string.h>
+#include <stdlib.h>
+#include "batallas.h"
+#include "protagonista_y_pokemon.h"
+
 /*
  * Se deberan implementar las 5 funciones de batalla.
  * Las reglas para decidir al ganador las inventan ustedes
