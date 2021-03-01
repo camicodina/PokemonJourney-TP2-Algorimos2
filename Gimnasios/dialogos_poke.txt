@@ -1,6 +1,6 @@
 *1* 
 
-Brock, lider del gimnasio tipo roca: 
+Shiza, lider del gimnasio tipo roca: 
 1) Geodude 
 2) Onix
 3) Shieldon
@@ -13,10 +13,10 @@ Mini entrenador del gimnasio tipo roca, Norman
 
 *2* 
 
-Te has encontrado con Misty, lider del gimnasio de tipo agua! 
+NICE! Te has encontrado con Joseph, lider del gimnasio de tipo agua! 
 1) Staryu
 2) Wailmer
-3) Golduck
+3) Golduck 
 El entrenador Vesi, del gimnasio de tipo agia te ha desafiado a un combate pokemon:
 1) Magikarp 
 2) Horsea 
@@ -65,7 +65,7 @@ El entrenador Alicanto te desafia a un duelo pokemon!:
 1) Tropius 
 2) Peliper 
 3) Talonflame
-El entrenador Felix te desafia a un combate pokemon!: 
+El entrenador Levi te desafia a un combate pokemon!: 
 1) Noibat
 2) Pidgeotto
 3) Golbat

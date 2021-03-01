@@ -8,7 +8,7 @@ E;Alicanto
 P;Tropius 
 P;Peliper 
 P;Talonflame
-E;Felix
+E;Levi
 P;Noibat
 P;Pidgeotto
 P;Golbat

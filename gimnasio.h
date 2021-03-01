@@ -50,6 +50,14 @@ void gimnasio_mostrar(gimnasio_t* gimnasio);
 */
 void recompensa_caracteristicas(pokemon_t* pokemon);
 
+
+/*
+ * Revisa la caja del protagonista y la del oponente. El protagonista pide 
+ * prestado un pokemon del oponente a elección.
+ * Devuelve EXITO o FALLA.
+ */
+int pedir_prestado(personaje_t* protagonista, personaje_t* oponente){
+
 /*
  * Destruye el gimnasio liberando la memoria reservada por el mismo.
  */

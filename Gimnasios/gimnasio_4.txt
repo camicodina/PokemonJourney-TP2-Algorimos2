@@ -1,5 +1,5 @@
 G;Electrico;4;id_puntero_funcion
-L;Volt-demore
+L;Voltdemore
 P;Electabuzz
 P;Jolteon 
 P;Raichu 

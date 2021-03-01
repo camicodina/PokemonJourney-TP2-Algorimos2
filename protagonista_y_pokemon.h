@@ -26,6 +26,8 @@ typedef struct pokemon{
     int velocidad;
     int ataque;
     int defensa;
+    int nivel;
+    size_t id;
 }pokemon_t;
 
 
@@ -34,7 +36,6 @@ typedef struct personaje{
     lista_t* party;
     lista_t* caja;
     int mis_medallas;
-    int mi_nivel;
     size_t cantidad_pokemones;
 } personaje_t;
 
@@ -53,6 +54,17 @@ personaje_t* protagonista_crear(const char* ruta_archivo);
  */ 
 personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje, char tipo_de_personaje);
 
+
+/*
+ * Muestra conjunto de pokemon para combatir de un entrenador
+ */
+void mostrar_pokemon_party(personaje_t* protagonista);
+
+/*
+ * Muestra conjunto de pokemon obtendos por un entrenador
+ */
+void mostrar_pokemon_caja(personaje_t* protagonista);
+
 /*
  * Muestra al entrenador con sus pokemon
  */
@@ -61,7 +73,8 @@ void protagonista_mostrar(personaje_t* protagonista);
 
 /*
  * Permite al jugador que pueda cambiar sus pokemon entre los obtenidos (caja) y 
- * los usados para el combate (party)
+ * los usados para el combate (party).
+ * Devuelve EXITO O FALLA.
  */
 void cambios_party_caja(personaje_t* protagonista);
 

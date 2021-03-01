@@ -1,6 +1,6 @@
 G;Fantasma;6;id_puntero_funcion
 L;Fatima
-P;Drifblim
+P;Drifblim;130;140;120
 P;Spiritomb
 P;Dusclops
 P;Mega-Gengar

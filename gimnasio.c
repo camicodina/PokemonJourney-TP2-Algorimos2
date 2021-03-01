@@ -1,3 +1,4 @@
+
 #define MAX_BATALLAS 5
 #define MAX_NIVEL 63
 
@@ -92,7 +93,7 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
         fclose(archivo_gimnasio);
         return NULL;
     }
-    nuevo_gimnasio->lider=lider_gimnasio->nombre;
+    nuevo_gimnasio->lider=lider_gimnasio;
     lista_apilar(nuevo_gimnasio->miembros, lider_gimnasio);
 
     while(archivo_gimnasio != EOF){
@@ -126,11 +127,33 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
 
 // -------------------------- FUNCIONES MOSTRAR -------------------------- //
 
+void mostrar_miembros(gimnasio_t* gimnasio){
+    lista_iterador_t* iterador_miembros = lista_iterador_crear(gimnasio->miembros);
+    printf("MIEMBROS OFICIALES:\n");
+    printf("------------------------\n");
+    while(lista_iterador_tiene_siguiente(iterador_miembros)){
+        personaje_t* personaje_actual = lista_iterador_elemento_actual(iterador_miembros);
+        if(personaje_actual->nombre != gimnasio->lider->nombre){
+            printf("%s \n",personaje_actual->nombre);
+        }
+        lista_iterador_avanzar(iterador_miembros);
+    }
+    lista_iterador_destruir(iterador_miembros);
+}
+
 /*
  * Muestra información del gimnasio
  */
-void gimnasio_mostrar(gimnasio_t* gimnasio);
-
+void gimnasio_mostrar(gimnasio_t* gimnasio){
+    if(!gimnasio_crear) return;
+    printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
+    printf("GIMNASIO: %s\n",gimnasio->nombre);
+    printf("DIFICULTAD: %i\n",gimnasio->dificultad);
+    printf("LIDER: %s\n",gimnasio->lider->nombre);
+    printf("\n");
+    mostrar_miembros(gimnasio->miembros);
+    printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
+}
 
 // -------------------------- FUNCIONES BATALLA -------------------------- //
 
@@ -138,8 +161,47 @@ void gimnasio_mostrar(gimnasio_t* gimnasio);
 /*
 *  Mejora cada una de las habilidades del pokemon mientras sean menores a 63.
 */
-void recompensa_caracteristicas(pokemon_t* pokemon);
+void recompensa_caracteristicas(pokemon_t* pokemon){
+    if(!pokemon) return;
+    if(pokemon->nivel < 63){
+        printf("%s SUBIO DE NIVEL!\n", pokemon->nombre);
+        printf("Todas la caracteristicas aumentan +1\n");
+        pokemon->ataque++;
+        pokemon->velocidad++;
+        pokemon->defensa++;
+        pokemon->nivel++; 
+    }
+}
 
+/*
+ * Revisa la caja del protagonista y la del oponente. El protagonista pide 
+ * prestado un pokemon del oponente a elección.
+ * Devuelve EXITO o FALLA.
+ */
+int pedir_prestado(personaje_t* protagonista, personaje_t* oponente){
+    size_t id_prestado;
+    if(!protagonista) return FALLA;
+    if(!oponente) return FALLA;
+    printf("Elija el Pokemon a tomar prestado por un ratito :)\n");
+    mostrar_pokemon_caja(oponente);
+    printf("Ingrese el id del pokemon que quiera pedir o '0' para cancelar:\n");
+    scanf("%u", &id_prestado);
+    if(id_prestado <= (oponente->cantidad_pokemones)){
+        if(id_prestado == 0) return FALLA;
+        size_t posicion_prestado = id_prestado-1;
+        pokemon_t* aux_pokemon_prestado = (pokemon_t*)(lista_elemento_en_posicion(oponente->caja,posicion_prestado));
+        pokemon_t* pokemon_prestado = calloc(1,sizeof(pokemon_t));
+        if(!pokemon_prestado) return -1;
+        pokemon_prestado = aux_pokemon_prestado;
+
+        lista_insertar(protagonista->caja, pokemon_prestado);
+        printf("Completado!\n");
+        return 0;
+    }else{
+        printf("Hubo un error\n");
+        return -1;
+    }
+}
 
 // -------------------------- FUNCIONES DESTRUIR -------------------------- //
 

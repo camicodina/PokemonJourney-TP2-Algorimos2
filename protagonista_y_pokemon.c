@@ -1,9 +1,6 @@
 #define EXITO 0
 #define FALLA -1
 #define MAX_NOMBRE 30
-#define MAX_BATALLAS 5
-#define MAX_NIVEL 63
-
 
 #define POKEMON 'P'
 #define ENTRENADOR 'E'
@@ -32,8 +29,6 @@ personaje_t* protagonista_crear(const char* ruta_archivo){
     //Reservo memoria para el personaje y el primer pokemon.
     personaje_t* protagonista = calloc(1,sizeof(personaje_t));
     if(!protagonista)return NULL;
-
-    protagonista->mi_nivel=1;
     
     pokemon_t* mi_primer_pokemon = calloc(1,sizeof(pokemon_t));
     if(!mi_primer_pokemon){
@@ -198,34 +193,49 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
 
 // -------------------------- OTRAS FUNCIONES -------------------------- //
 
-
+/*
+ * Imprime el pokemon recibido por parámetro con sus características 
+ */
 void mostrar_pokemon(pokemon_t* pokemon){
-    printf("%s        %i               %i          %i       \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa);
+    printf("%s        %i               %i          %i       %i   \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa,pokemon->id);
     printf("-----------------------------------------------------------------\n");
     printf("\n");
 }
 
+
+/*
+ * Muestra conjunto de pokemon para combatir de un entrenador
+ */
 void mostrar_pokemon_party(personaje_t* protagonista){
+    int i=1;
     lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
     printf("POKEMON EN PARTY:\n");
     printf("-----------------------------------------------------------------\n");
     printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        \n");
     while(lista_iterador_tiene_siguiente(iterador_party)){
         pokemon_t* pokemon_actual_p = lista_iterador_elemento_actual(iterador_party);
+        pokemon_actual_p->id=i;
         mostrar_pokemon(pokemon_actual_p);
+        i++;
         lista_iterador_avanzar(iterador_party);
     }
     lista_iterador_destruir(iterador_party);
 }
 
+/*
+ * Muestra conjunto de pokemon obtendos por un entrenador
+ */
 void mostrar_pokemon_caja(personaje_t* protagonista){
+
     lista_iterador_t* iterador_caja = lista_iterador_crear(protagonista->caja);
     printf("POKEMON EN CAJA:\n");
     printf("-----------------------------------------------------------------\n");
-    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        \n");
+    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        ID   \n");
     while(lista_iterador_tiene_siguiente(iterador_caja)){
         pokemon_t* pokemon_actual_c = lista_iterador_elemento_actual(iterador_caja);
+        pokemon_actual_c->id=i;
         mostrar_pokemon(pokemon_actual_c);
+        i++;
         lista_iterador_avanzar(iterador_caja);
     }
     lista_iterador_destruir(iterador_caja);
@@ -238,7 +248,6 @@ void protagonista_mostrar(personaje_t* protagonista){
     if(!protagonista) return;
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
     printf("NOMBRE: %s\n",protagonista->nombre);
-    printf("NIVEL: %i\n",protagonista->mi_nivel);
     printf("CANTIDAD DE MEDALLAS OBTENIDAS: %i\n",protagonista->mis_medallas);
     printf("\n");
     mostrar_pokemon_party(protagonista);
@@ -246,13 +255,94 @@ void protagonista_mostrar(personaje_t* protagonista){
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
 }
 
+int recorrer_party(personaje_t* protagonista, pokemon_t* buscado){
+    if(!party || !buscado) return FALLA;
+    lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
+    while(lista_iterador_tiene_siguiente(iterador_party)){
+        pokemon_t* pokemon_actual = lista_iterador_elemento_actual(iterador_party);
+        if(pokemon_actual->nombre == buscado->nombre){
+            return FALLA;
+        }
+        lista_iterador_avanzar(iterador_party);
+    }
+    lista_iterador_destruir(iterador_party);
+    return EXITO;
+}
+}
 
 /*
  * Permite al jugador que pueda cambiar sus pokemon entre los obtenidos (caja) y 
- * los usados para el combate (party)
+ * los usados para el combate (party).
+ * Devuelve EXITO O FALLA.
  */
-void cambios_party_caja(personaje_t* protagonista){
+int cambios_party_caja(personaje_t* protagonista){
+    if(!protagonista) return FALLA;
+
+    int valorOp;
+    printf("Elija la operación que desea realizar:\n");
+    printf("1 - Devolver a caja\n");
+    printf("2 - Agregar a party\n");
+    printf("0 - Cancelar\n");
+    scanf("%i", &valorOp);
+
+    switch(valorOp){
+    case 1:
+        size_t id_sacar;
+        printf("Elija el Pokemon que desee devolver a caja:\n");
+        mostrar_pokemon_party(protagonista->party);
+        printf("Ingrese el ID del pokemon que eligido o '0' para cancelar:\n");
+        scanf("%u", &id_sacar);
+        if(id_sacar <= lista_elementos(protagonista->party)){
+            if(id_sacar == 0){
+                printf("La operacion fue cancelada\n");
+                return FALLA;
+            }
+            size_t posicion_a_sacar = id_sacar-1;
+            lista_borrar_de_posicion(protagonista->party,posicion_a_sacar);
+        }else{
+            printf("Hubo un error\n");
+            return FALLA;
+        }
+        printf("Completado!\n");
+        break;
+    case 2:
+        size_t id_agregar;
+        printf("Elija el Pokemon que desee agregar a party:\n");
+        mostrar_pokemon_party(protagonista->caja);
+        printf("Ingrese el ID del pokemon que quiera o '0' para cancelar:\n");
+        scanf("%u", &id_agregar);
+        if(id_agregar <= lista_elementos(protagonista->caja)){
+            if(id_agregar == 0){
+                printf("La operacion fue cancelada\n");
+                return FALLA;
+            }
+            size_t posicion_a_agregar = id_cambio-1;
+            pokemon_t* aux_pokemon_a_agregar = (pokemon_t*)(lista_elemento_en_posicion(protagonista->caja,posicion_a_agregar));
+            int ya_estaba = recorrer_party(protagonista,aux_pokemon_a_agregar);
+            if((ya_estaba==EXITO) && (lista_elementos(protagonista->party) < 6)){
+                 lista_insertar(protagonista->caja, pokemon_prestado);
+            }else{
+                printf("Hubo un error\n");
+                return FALLA;
+            }
+        }else{
+            printf("Hubo un error\n");
+            return FALLA;
+        } 
+        printf("Completado!\n");
+        break; 
+    case 0:
+        printf("Operación cancelada.\n");
+        return FALLA;
+        break;
+    default:
+        printf("Hubo un error, intente nuevamente:\n");
+        cambios_party_caja(protagonista);
+    };
+
     
+    return 0;
+
 }
 
 // -------------------------- FUNCIONES DE DESTRUCCION -------------------------- //
