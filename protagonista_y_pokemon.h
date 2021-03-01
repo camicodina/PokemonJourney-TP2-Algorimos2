@@ -38,12 +38,20 @@ typedef struct personaje{
     size_t cantidad_pokemones;
 } personaje_t;
 
+// -------------------------- FUNCIONES -------------------------- //
+
 /*
- * Función que dado un archivo carga al personaje principal reservando la memoria necesaria 
- * para el mismo o NULL en caso de error.
+ * Función que, dado el archivo del protagonista o de un gimnasio, reserva la memoria 
+ * necesaria para la creación de un entrenador.
+ * Devuelve al entrenador o NULL en caso de error.
  */
 personaje_t* protagonista_crear(const char* ruta_archivo);
 
+
+/*
+ * Función que opera sobre el archivo abierto para crear el personaje.
+ */ 
+personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje, char tipo_de_personaje);
 
 /*
  * Muestra al entrenador con sus pokemon

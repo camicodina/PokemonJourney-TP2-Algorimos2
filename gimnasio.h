@@ -21,11 +21,6 @@
 
 // -------------------------- ESTRUCTURAS -------------------------- //
 
-typedef struct entrenador{
-    char nombre[MAX_NOMBRE];
-    lista_t* party;
-}entrenador_t;
-
 typedef struct gimnasio{
     char nombre[MAX_NOMBRE];
     int dificultad;
@@ -35,12 +30,7 @@ typedef struct gimnasio{
 }gimnasio_t;
 
 
-/*
- * Función que dado un archivo de gimnasio carga un entrenador reservando la memoria 
- * necesaria para el mismo o NULL en caso de error.
- */
-entrenador_t* entrenador_crear(const char* ruta_archivo);
-
+// -------------------------- FUNCIONES -------------------------- //
 
 /*
  * Función que dado un archivo carga un gimnasio reservando la memoria necesaria 
@@ -59,12 +49,6 @@ void gimnasio_mostrar(gimnasio_t* gimnasio);
 *  Mejora cada una de las habilidades del pokemon mientras sean menores a 63.
 */
 void recompensa_caracteristicas(pokemon_t* pokemon);
-
-
-/*
- * Destruye el entrenador liberando la memoria reservada por el mismo.
- */
-void entrenador_destruir(entrenador_t* entrenador);
 
 /*
  * Destruye el gimnasio liberando la memoria reservada por el mismo.
