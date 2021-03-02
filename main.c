@@ -159,7 +159,7 @@ void menu_batalla(batallas_pokemon_t* partida,personaje_t* protagonista, gimnasi
         if(lider){
             menu_victoria(partida,protagonista,gimnasio);
         }
-        entrenador_destruir(entrenador_oponente);
+        protagonista_destruir(entrenador_oponente);
         lista_desapilar(gimnasio->miembros);
         printf("Y en el siguiente round...\n");
         menu_batalla(partida,protagonista,gimnasio);

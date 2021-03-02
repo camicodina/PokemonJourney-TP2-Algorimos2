@@ -43,7 +43,7 @@ gimnasio_t* leo_datos_gimnasio(gimnasio_t* gimnasio, FILE* archivo_gimnasio){
     }
     
     gimnasio_t* aux_gimnasio;
-    int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO, aux_gimnasio->nombre,aux_gimnasio->dificultad,aux_gimnasio->id_puntero_funcion);
+    int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO, aux_gimnasio->nombre,&(aux_gimnasio->dificultad),&(aux_gimnasio->id_puntero_funcion));
     if(!primera_linea_leida || primera_linea_leida != 3){
         fclose(archivo_gimnasio);
         free(gimnasio);
@@ -99,7 +99,7 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
     nuevo_gimnasio->miembros = lista_crear();
     if (!nuevo_gimnasio->miembros){
         free(nuevo_gimnasio);
-        entrenador_destruir(lider_gimnasio);
+        protagonista_destruir(lider_gimnasio);
         fclose(archivo_gimnasio);
         return NULL;
     }
@@ -194,8 +194,8 @@ int gimnasios_agregar(heap_t* heap_gimnasios,const char* ruta){
 
 // -------------------------- FUNCIONES MOSTRAR -------------------------- //
 
-void mostrar_miembros(gimnasio_t* gimnasio){
-    lista_iterador_t* iterador_miembros = lista_iterador_crear(gimnasio->miembros);
+void mostrar_miembros(lista_t* miembros){
+    lista_iterador_t* iterador_miembros = lista_iterador_crear(miembros);
     printf("MIEMBROS OFICIALES:\n");
     printf("------------------------\n");
     while(lista_iterador_tiene_siguiente(iterador_miembros)){
@@ -262,7 +262,7 @@ int pedir_prestado(personaje_t* protagonista, personaje_t* oponente){
     printf("Elija el Pokemon a tomar prestado por un ratito :)\n");
     mostrar_pokemon_caja(oponente);
     printf("Ingrese el id del pokemon que quiera pedir o '0' para cancelar:\n");
-    scanf("%u", &id_prestado);
+    scanf("%lu", &id_prestado);
     if(id_prestado <= (oponente->cantidad_pokemones)){
         if(id_prestado == 0) return FALLA;
         size_t posicion_prestado = id_prestado-1;
@@ -289,7 +289,7 @@ void miembros_destruir(lista_t* lista_miembros){
     if(!lista_miembros) return;
     while(!lista_vacia(lista_miembros)){
         personaje_t* personaje_a_borrar = lista_ultimo(lista_miembros);
-        entrenador_destruir(personaje_a_borrar);
+        protagonista_destruir(personaje_a_borrar);
         lista_desapilar(lista_miembros);
     }
     lista_destruir(lista_miembros);

@@ -26,8 +26,17 @@ Durante la elaboración del trabajo también se utilizó valgrind para la depura
 
 ## Contruido con... ⚙
 
-- TDA Heap
-- TDA Lista     
+TDAs principales_
+- TDA Heap --> Usado para garantizar los niveles ascendentes en los gimnasios.
+- TDA Lista --> Usado para almacenar los pokemones en los conjuntos party y caja. 
+                También es usado para almacenar los entrenadores en un gimnasio.
+- TDA Pila --> Usado para quitar y amontonar entrenadores en la lista del gimnasio.
+
+Los archivos principales son:
+
+- protagonista_y_pokemon donde se declaran las funciones para operar sobre los mismos.
+- gimnasio que a partir del archivo anterior y batalla se encarga de crear el gimnasio y crear la logica del juego.
+- main contiene los menues y llama a las funciones para ejecutar el juego.
 
 ---
 
