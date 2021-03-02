@@ -211,10 +211,10 @@ void mostrar_pokemon_party(personaje_t* protagonista){
     lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
     printf("POKEMON EN PARTY:\n");
     printf("-----------------------------------------------------------------\n");
-    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        \n");
+    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        ID   \n");
     while(lista_iterador_tiene_siguiente(iterador_party)){
         pokemon_t* pokemon_actual_p = lista_iterador_elemento_actual(iterador_party);
-        pokemon_actual_p->id=i;
+        pokemon_actual_p->id = i;
         mostrar_pokemon(pokemon_actual_p);
         i++;
         lista_iterador_avanzar(iterador_party);
@@ -226,7 +226,7 @@ void mostrar_pokemon_party(personaje_t* protagonista){
  * Muestra conjunto de pokemon obtendos por un entrenador
  */
 void mostrar_pokemon_caja(personaje_t* protagonista){
-
+    int i = 1;
     lista_iterador_t* iterador_caja = lista_iterador_crear(protagonista->caja);
     printf("POKEMON EN CAJA:\n");
     printf("-----------------------------------------------------------------\n");
@@ -256,7 +256,7 @@ void protagonista_mostrar(personaje_t* protagonista){
 }
 
 int recorrer_party(personaje_t* protagonista, pokemon_t* buscado){
-    if(!party || !buscado) return FALLA;
+    if(!protagonista || !protagonista->party || !buscado) return FALLA;
     lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
     while(lista_iterador_tiene_siguiente(iterador_party)){
         pokemon_t* pokemon_actual = lista_iterador_elemento_actual(iterador_party);
@@ -268,6 +268,23 @@ int recorrer_party(personaje_t* protagonista, pokemon_t* buscado){
     lista_iterador_destruir(iterador_party);
     return EXITO;
 }
+
+
+/*
+ * Elije Pokemon a usar en la batalla desde party
+ */
+pokemon_t* elegir_pokemon(personaje_t* protagonista){
+    pokemon_t* pokemon_elegido;
+    size_t elegido;
+    
+    printf("Seleccione el Pokemon a utilizar en la partida:\n");
+    mostrar_pokemon_party(protagonista);
+    scanf("%u", &elegido);
+    if((elegido <= (protagonista->cantidad_pokemones)) && (elegido != 0)){
+        size_t posicion_elegido = elegido-1;
+        pokemon_elegido = (pokemon_t*)(lista_elemento_en_posicion(protagonista->party,posicion_elegido));
+    }
+    return pokemon_elegido;
 }
 
 /*
@@ -316,11 +333,11 @@ int cambios_party_caja(personaje_t* protagonista){
                 printf("La operacion fue cancelada\n");
                 return FALLA;
             }
-            size_t posicion_a_agregar = id_cambio-1;
+            size_t posicion_a_agregar = id_agregar-1;
             pokemon_t* aux_pokemon_a_agregar = (pokemon_t*)(lista_elemento_en_posicion(protagonista->caja,posicion_a_agregar));
             int ya_estaba = recorrer_party(protagonista,aux_pokemon_a_agregar);
             if((ya_estaba==EXITO) && (lista_elementos(protagonista->party) < 6)){
-                 lista_insertar(protagonista->caja, pokemon_prestado);
+                 lista_insertar(protagonista->caja, aux_pokemon_a_agregar);
             }else{
                 printf("Hubo un error\n");
                 return FALLA;

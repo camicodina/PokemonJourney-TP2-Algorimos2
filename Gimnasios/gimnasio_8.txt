@@ -1,15 +1,15 @@
-G;Dragon;8;id_puntero_funcion
+G;Dragon;8;4
 L;Mendez
-P;Kingdra
-P;Altaria 
-P;Garchomp
-P;Mega-charizard X 
-P;Rayquaza
+P;Kingdra;105;105;105
+P;Altaria;105;70;90
+P;Garchomp;102;130;108
+P;Mega-charizard X;260;259;221
+P;Rayquaza;95;150;90
 E;Eren
-P;Fraxure 
-P;Drampa 
-P;Dragonite
+P;Fraxure;50;217;70
+P;Drampa;36;60;135
+P;Dragonite;110;134;105
 E;Sky
-P;Dragonite
-P;Flygon 
-P;Salamence
+P;Dragonite;100;134;105
+P;Flygon;100;100;80
+P;Salamence;100;135;80

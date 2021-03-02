@@ -1,4 +1,4 @@
-G;Agua;2;id_puntero_funcion
+G;Agua;2;1
 L;Joseph
 P;Staryu;65;55;30
 P;Wailmer;60;40;50

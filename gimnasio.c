@@ -19,6 +19,16 @@
 #include "gimnasio.h"
 
 
+// -------------------------- FUNCIONES DE BATALLA -------------------------- //
+
+void batallas_cargar(funcion_batalla* batallas){
+    batallas[0] = &funcion_batalla_1;
+    batallas[1] = &funcion_batalla_2;
+    batallas[2] = &funcion_batalla_3;
+    batallas[3] = &funcion_batalla_4;
+    batallas[4] = &funcion_batalla_5;
+}
+
 // -------------------------- FUNCIONES CREACION -------------------------- //
 
 /*
@@ -94,7 +104,6 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
         return NULL;
     }
     nuevo_gimnasio->lider=lider_gimnasio;
-    lista_apilar(nuevo_gimnasio->miembros, lider_gimnasio);
 
     while(archivo_gimnasio != EOF){
         personaje_t* entrenador_gimnasio = calloc(1,sizeof(personaje_t));
@@ -124,6 +133,64 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
     return nuevo_gimnasio;
 }
 
+/*
+ * Crea los gimnasios y los agrega al heap.
+ * Devuelve EXITO o FALLA.
+*/
+int todos_gimnasios_agregar(heap_t* heap_gimnasios){
+    if(!heap_gimnasios) return FALLA;
+
+    gimnasio_t* gimnasio_1 =gimnasio_crear("Gimnasios/gimnasio_1");
+    gimnasio_t* gimnasio_2 =gimnasio_crear("Gimnasios/gimnasio_2");
+    gimnasio_t* gimnasio_3 =gimnasio_crear("Gimnasios/gimnasio_3");
+    gimnasio_t* gimnasio_4 =gimnasio_crear("Gimnasios/gimnasio_4");
+    gimnasio_t* gimnasio_5 =gimnasio_crear("Gimnasios/gimnasio_5");
+    gimnasio_t* gimnasio_6 =gimnasio_crear("Gimnasios/gimnasio_6");
+    gimnasio_t* gimnasio_7 =gimnasio_crear("Gimnasios/gimnasio_7");
+    gimnasio_t* gimnasio_8 =gimnasio_crear("Gimnasios/gimnasio_8");
+
+    if(!gimnasio_1 || !gimnasio_2 || !gimnasio_3 || !gimnasio_4 || !gimnasio_5 || !gimnasio_6 || !gimnasio_7 || !gimnasio_8){
+        heap_destruir(heap_gimnasios);
+        gimnasio_destruir(gimnasio_1);
+        gimnasio_destruir(gimnasio_2);
+        gimnasio_destruir(gimnasio_3);
+        gimnasio_destruir(gimnasio_4);
+        gimnasio_destruir(gimnasio_5);
+        gimnasio_destruir(gimnasio_6);
+        gimnasio_destruir(gimnasio_7);
+        gimnasio_destruir(gimnasio_8);
+        return FALLA;
+    }
+
+    heap_insertar(heap_gimnasios, gimnasio_1);
+    heap_insertar(heap_gimnasios, gimnasio_2);
+    heap_insertar(heap_gimnasios, gimnasio_3);
+    heap_insertar(heap_gimnasios, gimnasio_4);
+    heap_insertar(heap_gimnasios, gimnasio_5);
+    heap_insertar(heap_gimnasios, gimnasio_6);
+    heap_insertar(heap_gimnasios, gimnasio_7);
+    heap_insertar(heap_gimnasios, gimnasio_8);
+
+    return EXITO;
+
+}
+
+
+/*
+ * Agrega un gimnasio al árbol de gimnasios
+*/
+int gimnasios_agregar(heap_t* heap_gimnasios,const char* ruta){
+    if(!heap_gimnasios) return FALLA;
+    if(!ruta) return FALLA;
+
+    gimnasio_t* gimnasio_a_agregar =gimnasio_crear(ruta);
+    if(!gimnasio_a_agregar){
+        return FALLA;
+    }
+    heap_insertar(heap_gimnasios, gimnasio_a_agregar);
+    return EXITO;
+
+}
 
 // -------------------------- FUNCIONES MOSTRAR -------------------------- //
 
@@ -133,9 +200,9 @@ void mostrar_miembros(gimnasio_t* gimnasio){
     printf("------------------------\n");
     while(lista_iterador_tiene_siguiente(iterador_miembros)){
         personaje_t* personaje_actual = lista_iterador_elemento_actual(iterador_miembros);
-        if(personaje_actual->nombre != gimnasio->lider->nombre){
-            printf("%s \n",personaje_actual->nombre);
-        }
+        
+        printf("%s \n",personaje_actual->nombre);
+    
         lista_iterador_avanzar(iterador_miembros);
     }
     lista_iterador_destruir(iterador_miembros);
@@ -145,7 +212,7 @@ void mostrar_miembros(gimnasio_t* gimnasio){
  * Muestra información del gimnasio
  */
 void gimnasio_mostrar(gimnasio_t* gimnasio){
-    if(!gimnasio_crear) return;
+    if(!gimnasio) return;
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
     printf("GIMNASIO: %s\n",gimnasio->nombre);
     printf("DIFICULTAD: %i\n",gimnasio->dificultad);
@@ -155,8 +222,18 @@ void gimnasio_mostrar(gimnasio_t* gimnasio){
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
 }
 
-// -------------------------- FUNCIONES BATALLA -------------------------- //
 
+/*
+ * Muestra los dos pokemon que se enfrentan en el combate del siglo.
+ */
+void mostrar_combate_informacion(pokemon_t* pokemon_protagonista, pokemon_t* pokemon_oponente){
+    printf("%s        %i               %i          %i       \n",pokemon_protagonista->nombre,pokemon_protagonista->velocidad,pokemon_protagonista->ataque,pokemon_protagonista->defensa);
+    printf("Se enfrenta al temerario...");
+    printf("%s        %i               %i          %i       \n",pokemon_oponente->nombre,pokemon_oponente->velocidad,pokemon_oponente->ataque,pokemon_oponente->defensa);
+}
+
+
+// -------------------------- FUNCIONES POST-BATALLA -------------------------- //
 
 /*
 *  Mejora cada una de las habilidades del pokemon mientras sean menores a 63.
@@ -225,4 +302,13 @@ void gimnasio_destruir(gimnasio_t* gimnasio){
     if (!gimnasio) return;
     miembros_destruir(gimnasio->miembros);
     free(gimnasio);    
+}
+
+/*
+ * Libera todo
+ */
+void liberar_todo(batallas_pokemon_t* batallas_pokemon){
+    if(!batallas_pokemon) return;
+    entrenador_destruir(batallas_pokemon->protagonista);
+    heap_destruir(batallas_pokemon->gimnasios);
 }

@@ -1,4 +1,4 @@
-G;Roca;1;id_puntero_funcion
+G;Roca;1;0
 L;Shiza
 P;Geodude;30;40;50
 P;Onix;40;50;70

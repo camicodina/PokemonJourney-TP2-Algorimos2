@@ -10,19 +10,18 @@ _Trabajo práctico Nº1 de Algoritmos y Programación II, Cátedra Mendez, Facul
 
 ## Introducción 🚀 
 
-....
-
+El objetivo de este trabajo es simular el camino que realiza un entrenador para convertirse en maestro Pokemon. Para eso, recorrerá distintos gimnasios y obtendrás las distintas medallas de la región (8) atravesando gimnasios más sencillos al principio y aumentando la dificultad paulatinamente.
 
 ## Modo de Uso 📝
 
 Comandos de compilación y ejecución:
 
-> $ gcc *.c -Wall -Werror -Wconversion -std=c99 -o gimnasio                
-> $ ./gimnasio 
+> $ gcc *.c -Wall -Werror -Wconversion -std=c99 -o aventura_pokemon                
+> $ ./aventura_pokemon 
 
 Durante la elaboración del trabajo también se utilizó valgrind para la depuración de problemas de memoria utilizando el siguiente comando: 
 
-> $ valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./gimnasio 
+> $ valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./aventura_pokemon 
 
 
 ## Contruido con... ⚙

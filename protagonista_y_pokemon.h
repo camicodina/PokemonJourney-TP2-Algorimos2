@@ -76,7 +76,12 @@ void protagonista_mostrar(personaje_t* protagonista);
  * los usados para el combate (party).
  * Devuelve EXITO O FALLA.
  */
-void cambios_party_caja(personaje_t* protagonista);
+int cambios_party_caja(personaje_t* protagonista);
+
+/*
+ * Elije Pokemon a usar en la batalla desde party
+ */
+pokemon_t* elegir_pokemon(personaje_t* protagonista);
 
 
 /*
