@@ -86,7 +86,7 @@ void recompensa_caracteristicas(pokemon_t* pokemon);
  * prestado un pokemon del oponente a elección.
  * Devuelve EXITO o FALLA.
  */
-int pedir_prestado(personaje_t* protagonista, personaje_t* oponente){
+int pedir_prestado(personaje_t* protagonista, personaje_t* oponente);
 
 
 /*

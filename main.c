@@ -40,7 +40,7 @@ void menu_victoria(batallas_pokemon_t* partida, personaje_t* protagonista, gimna
     protagonista->mis_medallas++;
 
     if(partida->es_simulacion){
-        heap_quitar_raiz(partida->gimnasios);
+        heap_borrar_minimal(partida->gimnasios);
         if(heap_vacio(partida->gimnasios) && protagonista->mis_medallas == 8){
              printf("No hay mas gimnasios... ¡TERMINA EL JUEGO!\n");
              menu_inicio(partida);
@@ -65,7 +65,7 @@ void menu_victoria(batallas_pokemon_t* partida, personaje_t* protagonista, gimna
         cambios_party_caja(protagonista);
         break;
     case 'N':
-        heap_quitar_raiz(partida->gimnasios);
+        heap_borrar_minimal(partida->gimnasios);
         if(heap_vacio(partida->gimnasios) && protagonista->mis_medallas == 8){
              printf("No hay mas gimnasios... ¡HA COMPLETADO EL JUEGO!\n");
              printf("¡Ahora si que eres un verdadero maestro pokemon!\n");
@@ -232,6 +232,7 @@ void menu_inicio(batallas_pokemon_t* partida){
             if(protagonista){
                 printf("Se cargó correctamente el protagonista\n");
                 partida->protagonista = protagonista;
+            }
         }else{
             protagonista_destruir(partida->protagonista);
             partida->protagonista == NULL;
@@ -259,6 +260,7 @@ void menu_inicio(batallas_pokemon_t* partida){
             personaje_t* protagonista = protagonista_crear("protagonista.txt");
             if(protagonista){
                 partida->protagonista = protagonista;
+            }
         }
         if(heap_elementos(partida->gimnasios) < 8){
             printf("Se usan gimnasios default\n");
@@ -282,7 +284,9 @@ void menu_inicio(batallas_pokemon_t* partida){
                 personaje_t* protagonista = protagonista_crear("protagonista.txt");
                 if(protagonista){
                     partida->protagonista = protagonista;
-            }
+                }
+        }
+
         if(heap_elementos(partida->gimnasios) < 8){
             printf("Se usan gimnasios default\n");
             while (partida->gimnasios->tope > 0){

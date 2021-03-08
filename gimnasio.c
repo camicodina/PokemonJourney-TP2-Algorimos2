@@ -105,7 +105,7 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
     }
     nuevo_gimnasio->lider=lider_gimnasio;
 
-    while(archivo_gimnasio != EOF){
+    while(!feof(archivo_gimnasio)){
         personaje_t* entrenador_gimnasio = calloc(1,sizeof(personaje_t));
         if(!entrenador_gimnasio){
             gimnasio_destruir(nuevo_gimnasio);
@@ -309,6 +309,6 @@ void gimnasio_destruir(gimnasio_t* gimnasio){
  */
 void liberar_todo(batallas_pokemon_t* batallas_pokemon){
     if(!batallas_pokemon) return;
-    entrenador_destruir(batallas_pokemon->protagonista);
+    protagonista_destruir(batallas_pokemon->protagonista);
     heap_destruir(batallas_pokemon->gimnasios);
 }

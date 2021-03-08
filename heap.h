@@ -61,10 +61,7 @@ int heap_borrar_minimal(heap_t* heap);
 /*
  * Devuelve la cantidad de elementos que hay en el arbol (heap).
 */
-size_t heap_elementos(heap_t* heap){
-    if (!heap) return 0;
-    return heap->tope;
-}
+size_t heap_elementos(heap_t* heap);
 
 /*
  * Devuelve el elemento almacenado como raiz o NULL si el árbol está
