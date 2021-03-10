@@ -16,7 +16,7 @@ El objetivo de este trabajo es simular el camino que realiza un entrenador para 
 
 Comandos de compilación y ejecución:
 
-> $ gcc *.c -Wall -Werror -Wconversion -std=c99 -o aventura_pokemon                
+> $ gcc *.c -g -Wall -Werror -O0 -Wconversion -std=c99 -o aventura_pokemon          
 > $ ./aventura_pokemon 
 
 Durante la elaboración del trabajo también se utilizó valgrind para la depuración de problemas de memoria utilizando el siguiente comando: 

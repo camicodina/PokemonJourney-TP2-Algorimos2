@@ -46,22 +46,8 @@ typedef struct batallas_pokemon{
  * Función que dado un archivo carga un gimnasio reservando la memoria necesaria 
  * para el mismo o NULL en caso de error.
  */
-gimnasio_t* gimnasio_crear(const char* ruta_archivo);
+gimnasio_t* gimnasio_crear(char ruta_archivo[MAX_RUTA]);
 
-
-
-/*
- * Crea los gimnasios y los agrega al heap.
- * Devuelve EXITO o FALLA.
-*/
-int todos_gimnasios_agregar(heap_t* heap_gimnasios){
-
-
-/*
- * Agrega un gimnasio al árbol de gimnasios
- * Devuelve EXITO o FALLA.
-*/
-int gimnasios_agregar(heap_t* heap_gimnasios,const char* ruta);
 
 /*
  * Muestra información del gimnasio

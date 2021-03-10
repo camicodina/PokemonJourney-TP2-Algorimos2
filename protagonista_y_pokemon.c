@@ -1,6 +1,7 @@
 #define EXITO 0
 #define FALLA -1
 #define MAX_NOMBRE 30
+#define MAX_RUTA 99
 
 #define POKEMON 'P'
 #define ENTRENADOR 'E'
@@ -24,7 +25,7 @@
  * Función que dado un archivo carga al personaje principal reservando la memoria necesaria 
  * para el mismo o NULL en caso de error.
  */
-personaje_t* protagonista_crear(const char* ruta_archivo){
+personaje_t* protagonista_crear(char ruta_archivo[MAX_RUTA]){
 
     //Reservo memoria para el personaje y el primer pokemon.
     personaje_t* protagonista = calloc(1,sizeof(personaje_t));
@@ -62,15 +63,14 @@ personaje_t* leo_nombre_personaje(personaje_t* personaje, pokemon_t* primer_poke
         return NULL;
     }
     
-    personaje_t* aux_personaje;
-    int primera_linea_leida = fscanf(archivo_personaje, FORMATO_LECTURA_ENTRENADOR, aux_personaje->nombre);
+    int primera_linea_leida = fscanf(archivo_personaje, FORMATO_LECTURA_ENTRENADOR, personaje->nombre);
     if(!primera_linea_leida || primera_linea_leida != 1){
         fclose(archivo_personaje);
         free(personaje);
         free(primer_pokemon);
         return NULL;
     }
-   return aux_personaje;
+   return personaje;
 }
 
 /*
@@ -86,15 +86,14 @@ char tipo = (char)fgetc(archivo_personaje);
         return NULL;
     }
 
-    pokemon_t* aux_pokemon;
-    int pokemon_leido = fscanf(archivo_personaje, FORMATO_LECTURA_POKEMON,aux_pokemon->nombre, &(aux_pokemon->velocidad), &(aux_pokemon->ataque), &(aux_pokemon->defensa));
+    int pokemon_leido = fscanf(archivo_personaje, FORMATO_LECTURA_POKEMON,primer_pokemon->nombre, &(primer_pokemon->velocidad), &(primer_pokemon->ataque), &(primer_pokemon->defensa));
     if(!pokemon_leido || pokemon_leido != 4){
         fclose(archivo_personaje);
         free(primer_pokemon);
         free(personaje);
         return NULL;
     } 
-    return aux_pokemon;
+    return primer_pokemon;
 }
 
 /*
@@ -124,12 +123,10 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
     }
 
     //Leo primera linea: nombre del personaje.
-    personaje_t* datos_personaje = leo_nombre_personaje(personaje,primer_pokemon,archivo_personaje,tipo_de_personaje);
-    personaje = datos_personaje;
+    leo_nombre_personaje(personaje,primer_pokemon,archivo_personaje,tipo_de_personaje);
 
     //Leo segunda linea: primer pokemon del entrenador.
-    pokemon_t* datos_pokemon = leo_primer_pokemon(personaje,primer_pokemon,archivo_personaje,tipo_de_personaje);
-    primer_pokemon = datos_pokemon;
+    leo_primer_pokemon(personaje,primer_pokemon,archivo_personaje,tipo_de_personaje);
 
     //Creo las listas party y caja. Agrego primer pokemon a caja (conjunto de poke obtenidos).
     personaje->caja = lista_crear();
@@ -154,10 +151,10 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
 
     //Leo y agrego el resto de pokemon en caso de haberlos
 
-    pokemon_t* aux_otro_pokemon;
+    pokemon_t aux_otro_pokemon;
     char tipo = (char)fgetc(archivo_personaje);
     while(tipo==POKEMON){
-        int pokemon_leido = fscanf(archivo_personaje, FORMATO_LECTURA_POKEMON,aux_otro_pokemon->nombre, &(aux_otro_pokemon->velocidad), &(aux_otro_pokemon->ataque), &(aux_otro_pokemon->defensa));
+        int pokemon_leido = fscanf(archivo_personaje, FORMATO_LECTURA_POKEMON,aux_otro_pokemon.nombre, &(aux_otro_pokemon.velocidad), &(aux_otro_pokemon.ataque), &(aux_otro_pokemon.defensa));
         if(pokemon_leido == 4){
             pokemon_t* otro_pokemon = calloc(1,sizeof(pokemon_t));
             if(!otro_pokemon){
@@ -168,7 +165,7 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
                 fclose(archivo_personaje);
                 return NULL;
             }
-            otro_pokemon = aux_otro_pokemon;
+            otro_pokemon = &aux_otro_pokemon;
             lista_insertar(personaje->caja, otro_pokemon);
             (personaje->cantidad_pokemones)++;
         }else{
@@ -197,7 +194,7 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
  * Imprime el pokemon recibido por parámetro con sus características 
  */
 void mostrar_pokemon(pokemon_t* pokemon){
-    printf("%s        %i               %i          %i       %i   \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa,pokemon->id);
+    printf("%s        %i               %i          %i       %lu   \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa,pokemon->id);
     printf("-----------------------------------------------------------------\n");
     printf("\n");
 }
@@ -207,7 +204,7 @@ void mostrar_pokemon(pokemon_t* pokemon){
  * Muestra conjunto de pokemon para combatir de un entrenador
  */
 void mostrar_pokemon_party(personaje_t* protagonista){
-    int i=1;
+    size_t i=1;
     lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
     printf("POKEMON EN PARTY:\n");
     printf("-----------------------------------------------------------------\n");
@@ -226,7 +223,7 @@ void mostrar_pokemon_party(personaje_t* protagonista){
  * Muestra conjunto de pokemon obtendos por un entrenador
  */
 void mostrar_pokemon_caja(personaje_t* protagonista){
-    int i = 1;
+    size_t i = 1;
     lista_iterador_t* iterador_caja = lista_iterador_crear(protagonista->caja);
     printf("POKEMON EN CAJA:\n");
     printf("-----------------------------------------------------------------\n");
@@ -279,7 +276,7 @@ pokemon_t* elegir_pokemon(personaje_t* protagonista){
     
     printf("Seleccione el Pokemon a utilizar en la partida:\n");
     mostrar_pokemon_party(protagonista);
-    scanf("%u", &elegido);
+    scanf("%lu", &elegido);
     if((elegido <= (protagonista->cantidad_pokemones)) && (elegido != 0)){
         size_t posicion_elegido = elegido-1;
         pokemon_elegido = (pokemon_t*)(lista_elemento_en_posicion(protagonista->party,posicion_elegido));
@@ -294,6 +291,8 @@ pokemon_t* elegir_pokemon(personaje_t* protagonista){
  */
 int cambios_party_caja(personaje_t* protagonista){
     if(!protagonista) return FALLA;
+    size_t id_sacar;
+    size_t id_agregar;
 
     int valorOp;
     printf("Elija la operación que desea realizar:\n");
@@ -303,12 +302,11 @@ int cambios_party_caja(personaje_t* protagonista){
     scanf("%i", &valorOp);
 
     switch(valorOp){
-    case 1:
-        size_t id_sacar;
+    case 1: 
         printf("Elija el Pokemon que desee devolver a caja:\n");
-        mostrar_pokemon_party(protagonista->party);
+        mostrar_pokemon_party(protagonista);
         printf("Ingrese el ID del pokemon que eligido o '0' para cancelar:\n");
-        scanf("%u", &id_sacar);
+        scanf("%lu", &id_sacar);
         if(id_sacar <= lista_elementos(protagonista->party)){
             if(id_sacar == 0){
                 printf("La operacion fue cancelada\n");
@@ -323,11 +321,10 @@ int cambios_party_caja(personaje_t* protagonista){
         printf("Completado!\n");
         break;
     case 2:
-        size_t id_agregar;
         printf("Elija el Pokemon que desee agregar a party:\n");
-        mostrar_pokemon_party(protagonista->caja);
+        mostrar_pokemon_caja(protagonista);
         printf("Ingrese el ID del pokemon que quiera o '0' para cancelar:\n");
-        scanf("%u", &id_agregar);
+        scanf("%lu", &id_agregar);
         if(id_agregar <= lista_elementos(protagonista->caja)){
             if(id_agregar == 0){
                 printf("La operacion fue cancelada\n");

@@ -4,6 +4,7 @@
 #define EXITO 0
 #define FALLA -1
 #define MAX_NOMBRE 30
+#define MAX_RUTA 99
 
 
 #define POKEMON 'P'
@@ -46,7 +47,7 @@ typedef struct personaje{
  * necesaria para la creación de un entrenador.
  * Devuelve al entrenador o NULL en caso de error.
  */
-personaje_t* protagonista_crear(const char* ruta_archivo);
+personaje_t* protagonista_crear(char ruta_archivo[MAX_RUTA]);
 
 
 /*

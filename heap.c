@@ -54,12 +54,14 @@ void sift_up(heap_t* heap, size_t pos_nuevo){
 int heap_insertar(heap_t* heap, void* elemento){
     if(!heap) return FALLA;
     if(!heap->comparador) return FALLA;
-    void** vector = realloc(heap->vector,sizeof(void**)*((size_t)heap->tope+1));
-    if(!vector) return FALLA;
-    heap->vector = vector;
+    void* aux_vector = realloc(heap->vector,sizeof(void*)*(heap->tope+1));
+    if(!aux_vector) return FALLA;
+    heap->vector = aux_vector;
     heap->vector[heap->tope] = elemento;
     (heap->tope)++;
-    sift_up(heap, heap->tope-1);
+
+    size_t posicion_elemento_a_insertar = heap->tope-1;
+    sift_up(heap, posicion_elemento_a_insertar);
     return EXITO;
 }
 

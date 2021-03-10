@@ -34,7 +34,13 @@ void batallas_cargar(funcion_batalla* batallas){
 /*
  * Función auxiliar para la lectura de los datos del gimnasio.
  */
-gimnasio_t* leo_datos_gimnasio(gimnasio_t* gimnasio, FILE* archivo_gimnasio){
+gimnasio_t* creo_gimnasio_y_leo_datos(FILE* archivo_gimnasio){
+    //Reservo memoria para el gimnasio.
+    gimnasio_t* gimnasio = calloc(1,sizeof(gimnasio_t));
+    if(!gimnasio){
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
     char tipo = (char)fgetc(archivo_gimnasio);
     if(tipo != GIMNASIO){
         fclose(archivo_gimnasio);
@@ -42,33 +48,27 @@ gimnasio_t* leo_datos_gimnasio(gimnasio_t* gimnasio, FILE* archivo_gimnasio){
         return NULL;
     }
     
-    gimnasio_t* aux_gimnasio;
-    int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO, aux_gimnasio->nombre,&(aux_gimnasio->dificultad),&(aux_gimnasio->id_puntero_funcion));
+    int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO,gimnasio->nombre,&(gimnasio->dificultad),&(gimnasio->id_puntero_funcion));
     if(!primera_linea_leida || primera_linea_leida != 3){
         fclose(archivo_gimnasio);
         free(gimnasio);
         return NULL;
     }
-   return aux_gimnasio;
+   return gimnasio;
 }
 
 /*
  * Función que dado un archivo carga un gimnasio reservando la memoria necesaria 
  * para el mismo o NULL en caso de error.
  */
-gimnasio_t* gimnasio_crear(const char* ruta_archivo){
+gimnasio_t* gimnasio_crear(char ruta_archivo[MAX_RUTA]){
     
-    //Reservo memoria para el gimnasio.
-    gimnasio_t* nuevo_gimnasio = calloc(1,sizeof(gimnasio_t));
-    if(!nuevo_gimnasio)return NULL;
-
     //Abro archivo
     FILE* archivo_gimnasio= fopen(ruta_archivo,"r");
     if(!archivo_gimnasio){
-        free(nuevo_gimnasio);
         return NULL;
     }
-    nuevo_gimnasio = leo_datos_gimnasio(nuevo_gimnasio, archivo_gimnasio);
+    gimnasio_t* nuevo_gimnasio = creo_gimnasio_y_leo_datos(archivo_gimnasio);
 
     //Reservo memoria para el lider y su primer pokemon.
     personaje_t* lider_gimnasio = calloc(1,sizeof(personaje_t));
@@ -133,64 +133,6 @@ gimnasio_t* gimnasio_crear(const char* ruta_archivo){
     return nuevo_gimnasio;
 }
 
-/*
- * Crea los gimnasios y los agrega al heap.
- * Devuelve EXITO o FALLA.
-*/
-int todos_gimnasios_agregar(heap_t* heap_gimnasios){
-    if(!heap_gimnasios) return FALLA;
-
-    gimnasio_t* gimnasio_1 =gimnasio_crear("Gimnasios/gimnasio_1");
-    gimnasio_t* gimnasio_2 =gimnasio_crear("Gimnasios/gimnasio_2");
-    gimnasio_t* gimnasio_3 =gimnasio_crear("Gimnasios/gimnasio_3");
-    gimnasio_t* gimnasio_4 =gimnasio_crear("Gimnasios/gimnasio_4");
-    gimnasio_t* gimnasio_5 =gimnasio_crear("Gimnasios/gimnasio_5");
-    gimnasio_t* gimnasio_6 =gimnasio_crear("Gimnasios/gimnasio_6");
-    gimnasio_t* gimnasio_7 =gimnasio_crear("Gimnasios/gimnasio_7");
-    gimnasio_t* gimnasio_8 =gimnasio_crear("Gimnasios/gimnasio_8");
-
-    if(!gimnasio_1 || !gimnasio_2 || !gimnasio_3 || !gimnasio_4 || !gimnasio_5 || !gimnasio_6 || !gimnasio_7 || !gimnasio_8){
-        heap_destruir(heap_gimnasios);
-        gimnasio_destruir(gimnasio_1);
-        gimnasio_destruir(gimnasio_2);
-        gimnasio_destruir(gimnasio_3);
-        gimnasio_destruir(gimnasio_4);
-        gimnasio_destruir(gimnasio_5);
-        gimnasio_destruir(gimnasio_6);
-        gimnasio_destruir(gimnasio_7);
-        gimnasio_destruir(gimnasio_8);
-        return FALLA;
-    }
-
-    heap_insertar(heap_gimnasios, gimnasio_1);
-    heap_insertar(heap_gimnasios, gimnasio_2);
-    heap_insertar(heap_gimnasios, gimnasio_3);
-    heap_insertar(heap_gimnasios, gimnasio_4);
-    heap_insertar(heap_gimnasios, gimnasio_5);
-    heap_insertar(heap_gimnasios, gimnasio_6);
-    heap_insertar(heap_gimnasios, gimnasio_7);
-    heap_insertar(heap_gimnasios, gimnasio_8);
-
-    return EXITO;
-
-}
-
-
-/*
- * Agrega un gimnasio al árbol de gimnasios
-*/
-int gimnasios_agregar(heap_t* heap_gimnasios,const char* ruta){
-    if(!heap_gimnasios) return FALLA;
-    if(!ruta) return FALLA;
-
-    gimnasio_t* gimnasio_a_agregar =gimnasio_crear(ruta);
-    if(!gimnasio_a_agregar){
-        return FALLA;
-    }
-    heap_insertar(heap_gimnasios, gimnasio_a_agregar);
-    return EXITO;
-
-}
 
 // -------------------------- FUNCIONES MOSTRAR -------------------------- //
 
@@ -301,6 +243,7 @@ void miembros_destruir(lista_t* lista_miembros){
 void gimnasio_destruir(gimnasio_t* gimnasio){
     if (!gimnasio) return;
     miembros_destruir(gimnasio->miembros);
+    protagonista_destruir(gimnasio->lider);
     free(gimnasio);    
 }
 
@@ -311,4 +254,5 @@ void liberar_todo(batallas_pokemon_t* batallas_pokemon){
     if(!batallas_pokemon) return;
     protagonista_destruir(batallas_pokemon->protagonista);
     heap_destruir(batallas_pokemon->gimnasios);
+    free(batallas_pokemon);
 }
