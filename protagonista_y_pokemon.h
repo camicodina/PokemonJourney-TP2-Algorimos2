@@ -53,7 +53,7 @@ personaje_t* protagonista_crear(char ruta_archivo[MAX_RUTA]);
 /*
  * Función que opera sobre el archivo abierto para crear el personaje.
  */ 
-personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje, char tipo_de_personaje);
+personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje);
 
 
 /*

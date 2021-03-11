@@ -26,26 +26,34 @@
  * para el mismo o NULL en caso de error.
  */
 personaje_t* protagonista_crear(char ruta_archivo[MAX_RUTA]){
-
-    //Reservo memoria para el personaje y el primer pokemon.
-    personaje_t* protagonista = calloc(1,sizeof(personaje_t));
-    if(!protagonista)return NULL;
-    
-    pokemon_t* mi_primer_pokemon = calloc(1,sizeof(pokemon_t));
-    if(!mi_primer_pokemon){
-        free(protagonista);
-        return NULL;
-    }
-
     //Abro archivo
     FILE* archivo_protagonista= fopen(ruta_archivo,"r");
     if(!archivo_protagonista){
-        free(protagonista);
-        free(mi_primer_pokemon);
         return NULL;
     }
 
-    return personaje_cargar(protagonista, mi_primer_pokemon,archivo_protagonista,ENTRENADOR);
+    //Verifico tipo de la primera linea recibida
+    char tipo = (char)fgetc(archivo_protagonista);
+    if(tipo != ENTRENADOR){
+        fclose(archivo_protagonista);
+        return NULL;
+    }
+
+    //Reservo memoria para el personaje y el primer pokemon.
+    personaje_t* protagonista = calloc(1,sizeof(personaje_t));
+    if(!protagonista){
+        fclose(archivo_protagonista);
+        return NULL;
+    }
+
+    pokemon_t* mi_primer_pokemon = calloc(1,sizeof(pokemon_t));
+    if(!mi_primer_pokemon){
+        free(protagonista);
+        fclose(archivo_protagonista);
+        return NULL;
+    }
+
+    return personaje_cargar(protagonista, mi_primer_pokemon,archivo_protagonista);
 }
 
 
@@ -54,15 +62,7 @@ personaje_t* protagonista_crear(char ruta_archivo[MAX_RUTA]){
 /*
  * Función auxiliar para la lectura del nombre del entrenador/lider/protagonista.
  */
-personaje_t* leo_nombre_personaje(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje,char tipo_de_personaje){
-    char tipo = (char)fgetc(archivo_personaje);
-    if(tipo != tipo_de_personaje){
-        fclose(archivo_personaje);
-        free(personaje);
-        free(primer_pokemon);
-        return NULL;
-    }
-    
+personaje_t* leo_nombre_personaje(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje){
     int primera_linea_leida = fscanf(archivo_personaje, FORMATO_LECTURA_ENTRENADOR, personaje->nombre);
     if(!primera_linea_leida || primera_linea_leida != 1){
         fclose(archivo_personaje);
@@ -77,7 +77,7 @@ personaje_t* leo_nombre_personaje(personaje_t* personaje, pokemon_t* primer_poke
  * Función auxiliar para la lectura del primer pokemon que posee el 
  * entrenador/lider/protagonista.
  */
-pokemon_t* leo_primer_pokemon(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje,char tipo_de_personaje){
+pokemon_t* leo_primer_pokemon(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje){
 char tipo = (char)fgetc(archivo_personaje);
     if(tipo!=POKEMON){
         fclose(archivo_personaje);
@@ -114,8 +114,8 @@ void estado_inicial_party(personaje_t* personaje, pokemon_t* primer_pokemon){
 /*
  * Función que opera sobre el archivo abierto para crear el personaje.
  */ 
-personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje, char tipo_de_personaje){
-    if(!personaje || !primer_pokemon || !archivo_personaje || !tipo_de_personaje){
+personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje){
+    if(!personaje || !primer_pokemon || !archivo_personaje){
         fclose(archivo_personaje);
         free(personaje);
         free(primer_pokemon);
@@ -123,10 +123,10 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
     }
 
     //Leo primera linea: nombre del personaje.
-    leo_nombre_personaje(personaje,primer_pokemon,archivo_personaje,tipo_de_personaje);
+    leo_nombre_personaje(personaje,primer_pokemon,archivo_personaje);
 
     //Leo segunda linea: primer pokemon del entrenador.
-    leo_primer_pokemon(personaje,primer_pokemon,archivo_personaje,tipo_de_personaje);
+    leo_primer_pokemon(personaje,primer_pokemon,archivo_personaje);
 
     //Creo las listas party y caja. Agrego primer pokemon a caja (conjunto de poke obtenidos).
     personaje->caja = lista_crear();
@@ -150,18 +150,14 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
     (personaje->cantidad_pokemones)++;
 
     //Leo y agrego el resto de pokemon en caso de haberlos
-
     pokemon_t aux_otro_pokemon;
     char tipo = (char)fgetc(archivo_personaje);
-    while(tipo==POKEMON){
+    while(tipo == POKEMON){
         int pokemon_leido = fscanf(archivo_personaje, FORMATO_LECTURA_POKEMON,aux_otro_pokemon.nombre, &(aux_otro_pokemon.velocidad), &(aux_otro_pokemon.ataque), &(aux_otro_pokemon.defensa));
         if(pokemon_leido == 4){
             pokemon_t* otro_pokemon = calloc(1,sizeof(pokemon_t));
             if(!otro_pokemon){
-                free(primer_pokemon); 
-                lista_destruir(personaje->caja);
-                lista_destruir(personaje->party);
-                free(personaje); 
+                protagonista_destruir(personaje);
                 fclose(archivo_personaje);
                 return NULL;
             }
@@ -169,10 +165,7 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
             lista_insertar(personaje->caja, otro_pokemon);
             (personaje->cantidad_pokemones)++;
         }else{
-            free(primer_pokemon); 
-            lista_destruir(personaje->caja);
-            lista_destruir(personaje->party);
-            free(personaje); 
+            protagonista_destruir(personaje);
             fclose(archivo_personaje);
             return NULL;
         } 

@@ -1,0 +1,8 @@
+gimnasios/gimnasio_1.txt
+gimnasios/gimnasio_2.txt
+gimnasios/gimnasio_3.txt
+gimnasios/gimnasio_4.txt
+gimnasios/gimnasio_5.txt
+gimnasios/gimnasio_6.txt
+gimnasios/gimnasio_7.txt
+gimnasios/gimnasio_8.txt

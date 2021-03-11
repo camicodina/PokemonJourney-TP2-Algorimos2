@@ -50,7 +50,7 @@ int main(){
     printf("\033[0m");
 
     printf("¡Bienvenidx a Aventura Pokemon!\n");
-    printf("Iniciando el juego...\n");
+    printf("Iniciando el juego...\n\n\n");
 
     batallas_pokemon_t* nueva_partida = calloc(1,sizeof(batallas_pokemon_t));
     if(!nueva_partida) return FALLA;
@@ -66,7 +66,7 @@ int main(){
     batallas_cargar(nueva_partida->tipos);
 
     menu_inicio(nueva_partida);
-    
+
     liberar_todo(nueva_partida);
 
     return EXITO;

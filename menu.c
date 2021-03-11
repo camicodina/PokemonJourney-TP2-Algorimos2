@@ -59,6 +59,7 @@ void menu_inicio(batallas_pokemon_t* partida){
     char eleccion;
     int agregar_protagonista;
     int agregar_gimnasio;
+    bool error = false;
 
     printf("Elija una accion a realizar\n");
     printf("E - Ingresa archivo del protagonista\n");
@@ -72,33 +73,26 @@ void menu_inicio(batallas_pokemon_t* partida){
     case 'E':
         agregar_protagonista = protagonista_agregar(partida);
         if(agregar_protagonista == EXITO){
-            printf("Se cargó correctamente el protagonista\n");
-            system("clear");
-            printf("Se cargó correctamente el protagonista\n");
+            printf("\nSe cargó correctamente el protagonista\n\n");
             menu_inicio(partida);
         }else{
-            system("clear");
-            printf("Se produjo un error...\n");
-            menu_inicio(partida);
+            error = true;
         }
         break;
 
     case 'A':
         agregar_gimnasio = gimnasio_agregar(partida);
         if(agregar_gimnasio == EXITO){
-            printf("Se cargó correctamente el gimnasio\n");
-            system("clear");
-            printf("Se cargó correctamente el gimnasio\n");
+            printf("\nSe cargó correctamente el gimnasio\n\n");
             menu_inicio(partida);
         }else{
-            system("clear");
-            printf("Se produjo un error...\n");
-            menu_inicio(partida);
+            error = true;
         }
         break;
     case 'I':
         if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
-            printf("No se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n");
+            printf("\nNo se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n\n");
+            menu_inicio(partida);
         }else{
             printf("Comienza la aventura... ¿Estas listo?\n");
             menu_gimnasio(partida);
@@ -107,19 +101,42 @@ void menu_inicio(batallas_pokemon_t* partida){
 
     case 'S':
         partida->es_simulacion = true;
-        if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
-            printf("No se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n");
-        }else{
-            printf("¡Mira como se desencadena una batalla legendaria!\n");
-            menu_simulacion(partida);
-        }
+        gimnasio_t* gimnasio_1 = gimnasio_crear("gimnasios/gimnasio_1.txt");
+        gimnasio_t* gimnasio_2 = gimnasio_crear("gimnasios/gimnasio_2.txt");
+        gimnasio_t* gimnasio_3 = gimnasio_crear("gimnasios/gimnasio_3.txt");
+        gimnasio_t* gimnasio_4 = gimnasio_crear("gimnasios/gimnasio_4.txt");
+        gimnasio_t* gimnasio_5 = gimnasio_crear("gimnasios/gimnasio_5.txt");
+        gimnasio_t* gimnasio_6 = gimnasio_crear("gimnasios/gimnasio_6.txt");
+        gimnasio_t* gimnasio_7 = gimnasio_crear("gimnasios/gimnasio_7.txt");
+        gimnasio_t* gimnasio_8 = gimnasio_crear("gimnasios/gimnasio_8.txt");
+
+        heap_insertar(partida->gimnasios, gimnasio_1);
+        heap_insertar(partida->gimnasios, gimnasio_2);
+        heap_insertar(partida->gimnasios, gimnasio_3);
+        heap_insertar(partida->gimnasios, gimnasio_4);
+        heap_insertar(partida->gimnasios, gimnasio_5);
+        heap_insertar(partida->gimnasios, gimnasio_6);
+        heap_insertar(partida->gimnasios, gimnasio_7);
+        heap_insertar(partida->gimnasios, gimnasio_8);
+        // if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
+        //     printf("\nNo se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n\n");
+        //     menu_inicio(partida);
+        // }else{
+        //     printf("¡Mira como se desencadena una batalla legendaria!\n");
+        //     menu_simulacion(partida);
+        // }
         break;
     case 'X':
         break;
     default:
-        printf("Hubo un error, intente nuevamente:\n");
-        menu_inicio(partida);
+        error = true;
     };
+
+    if(error){
+        printf("\nSe produjo un error...\n\n");
+        menu_inicio(partida); 
+    }
+   
 
 }
 
