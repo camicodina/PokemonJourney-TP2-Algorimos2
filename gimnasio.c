@@ -35,103 +35,152 @@ void batallas_cargar(funcion_batalla* batallas){
  * Función auxiliar para la lectura de los datos del gimnasio.
  */
 gimnasio_t* creo_gimnasio_y_leo_datos(FILE* archivo_gimnasio){
-    //Reservo memoria para el gimnasio.
     gimnasio_t* gimnasio = calloc(1,sizeof(gimnasio_t));
     if(!gimnasio){
         fclose(archivo_gimnasio);
         return NULL;
     }
-    char tipo = (char)fgetc(archivo_gimnasio);
-    if(tipo != GIMNASIO){
-        fclose(archivo_gimnasio);
-        free(gimnasio);
-        return NULL;
-    }
-    
+
     int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO,gimnasio->nombre,&(gimnasio->dificultad),&(gimnasio->id_puntero_funcion));
     if(!primera_linea_leida || primera_linea_leida != 3){
         fclose(archivo_gimnasio);
         free(gimnasio);
         return NULL;
     }
-   return gimnasio;
+    return gimnasio;
 }
+
+
+/*
+ * Función auxiliar para la lectura de los datos del lider.
+ */
+personaje_t* creo_lider_y_leo_datos(FILE* archivo_gimnasio, gimnasio_t* gimnasio){
+    personaje_t* lider_gimnasio = calloc(1,sizeof(personaje_t));
+    if(!lider_gimnasio){
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
+    pokemon_t* primer_pokemon_lider = calloc(1,sizeof(pokemon_t));
+    if(!primer_pokemon_lider){
+        gimnasio_destruir(gimnasio);
+        free(lider_gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
+
+    lider_gimnasio = personaje_cargar(lider_gimnasio, primer_pokemon_lider, archivo_gimnasio, LIDER);
+    if(!lider_gimnasio){
+        free(lider_gimnasio);
+        free(primer_pokemon_lider);
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+        }
+
+    return lider_gimnasio;
+}
+
+/*
+ * Función auxiliar para la lectura de los datos de un entrenador.
+ */
+personaje_t* creo_entrenador_y_leo_datos(FILE* archivo_gimnasio, gimnasio_t* gimnasio){
+    personaje_t* entrenador_gimnasio = calloc(1,sizeof(personaje_t));
+    if(!entrenador_gimnasio){
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
+    pokemon_t* su_primer_pokemon= calloc(1,sizeof(pokemon_t));
+    if(!su_primer_pokemon){
+        free(entrenador_gimnasio);
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
+
+    entrenador_gimnasio = personaje_cargar(entrenador_gimnasio, su_primer_pokemon, archivo_gimnasio, ENTRENADOR);
+    if (!entrenador_gimnasio){
+        free(entrenador_gimnasio);
+        free(su_primer_pokemon);
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
+    return entrenador_gimnasio;
+}
+
 
 /*
  * Función que dado un archivo carga un gimnasio reservando la memoria necesaria 
  * para el mismo o NULL en caso de error.
  */
 gimnasio_t* gimnasio_crear(char ruta_archivo[MAX_RUTA]){
-    
     //Abro archivo
     FILE* archivo_gimnasio= fopen(ruta_archivo,"r");
     if(!archivo_gimnasio){
         return NULL;
     }
-    gimnasio_t* nuevo_gimnasio = creo_gimnasio_y_leo_datos(archivo_gimnasio);
 
-    //Reservo memoria para el lider y su primer pokemon.
-    personaje_t* lider_gimnasio = calloc(1,sizeof(personaje_t));
-    if(!lider_gimnasio){
-        free(nuevo_gimnasio);
+    //Reservo memoria para el gimnasio y leo sus datos
+    char letra_leida = (char)fgetc(archivo_gimnasio);
+    if(letra_leida != GIMNASIO){
         fclose(archivo_gimnasio);
         return NULL;
     }
-    pokemon_t* primer_pokemon_lider = calloc(1,sizeof(pokemon_t));
-    if(!primer_pokemon_lider){
-        free(nuevo_gimnasio);
-        free(lider_gimnasio);
+    gimnasio_t* nuevo_gimnasio = creo_gimnasio_y_leo_datos(archivo_gimnasio);
+    if(!nuevo_gimnasio){
         fclose(archivo_gimnasio);
         return NULL;
     }
-    
-    //Cargo al lider
-    lider_gimnasio = personaje_cargar(lider_gimnasio, primer_pokemon_lider, archivo_gimnasio, LIDER);
-    if(!lider_gimnasio){
-        free(lider_gimnasio);
-        free(primer_pokemon_lider);
-        free(nuevo_gimnasio);
+
+    //Reservo memoria para el lider y leo sus datos
+    letra_leida = (char)fgetc(archivo_gimnasio);
+    if(letra_leida != LIDER){
         fclose(archivo_gimnasio);
+        gimnasio_destruir(nuevo_gimnasio);
         return NULL;
     }
+
+    personaje_t* nuevo_lider = creo_lider_y_leo_datos(archivo_gimnasio,nuevo_gimnasio);
+    if(!nuevo_lider){
+        fclose(archivo_gimnasio);
+        gimnasio_destruir(nuevo_gimnasio);
+        return NULL;
+    }
+    nuevo_gimnasio->lider = nuevo_lider;
+
 
     //Creo pila (lista) de entrenadores y apilo al lider.
     nuevo_gimnasio->miembros = lista_crear();
     if (!nuevo_gimnasio->miembros){
-        free(nuevo_gimnasio);
-        protagonista_destruir(lider_gimnasio);
         fclose(archivo_gimnasio);
+        gimnasio_destruir(nuevo_gimnasio);
         return NULL;
     }
-    nuevo_gimnasio->lider=lider_gimnasio;
 
-    while(!feof(archivo_gimnasio)){
-        personaje_t* entrenador_gimnasio = calloc(1,sizeof(personaje_t));
-        if(!entrenador_gimnasio){
-            gimnasio_destruir(nuevo_gimnasio);
+    //Leo a los entrenadores y a sus pokemon
+    letra_leida = (char)fgetc(archivo_gimnasio);
+    if(letra_leida != ENTRENADOR){
+        fclose(archivo_gimnasio);
+        gimnasio_destruir(nuevo_gimnasio);
+        return NULL;
+    }
+    while(letra_leida == ENTRENADOR){
+        personaje_t* nuevo_entrenador =  creo_entrenador_y_leo_datos(archivo_gimnasio,nuevo_gimnasio);
+        lista_apilar(nuevo_gimnasio->miembros, nuevo_entrenador);
+        
+        letra_leida = (char)fgetc(archivo_gimnasio);
+        if(letra_leida != ENTRENADOR){
             fclose(archivo_gimnasio);
+            gimnasio_destruir(nuevo_gimnasio);
             return NULL;
         }
-        pokemon_t* su_primer_pokemon= calloc(1,sizeof(pokemon_t));
-        if(!primer_pokemon_lider){
-            free(entrenador_gimnasio);
-            gimnasio_destruir(nuevo_gimnasio);
-            fclose(archivo_gimnasio);
-            return NULL;
-        }
-        entrenador_gimnasio = personaje_cargar(entrenador_gimnasio, su_primer_pokemon, archivo_gimnasio, ENTRENADOR);
-        if (!entrenador_gimnasio){
-            free(entrenador_gimnasio);
-            free(su_primer_pokemon);
-            gimnasio_destruir(nuevo_gimnasio);
-            fclose(archivo_gimnasio);
-            return NULL;
-        }
-        lista_apilar(nuevo_gimnasio->miembros, entrenador_gimnasio);
     }
 
     return nuevo_gimnasio;
 }
+
 
 
 // -------------------------- FUNCIONES MOSTRAR -------------------------- //

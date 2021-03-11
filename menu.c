@@ -53,7 +53,6 @@ int protagonista_agregar(batallas_pokemon_t* partida){
     return EXITO;
 }
 
-
 //==================// MENU INICIO //==================// 
 
 void menu_inicio(batallas_pokemon_t* partida){
@@ -74,10 +73,13 @@ void menu_inicio(batallas_pokemon_t* partida){
         agregar_protagonista = protagonista_agregar(partida);
         if(agregar_protagonista == EXITO){
             printf("Se cargó correctamente el protagonista\n");
-            printf("\n\n");
+            system("clear");
+            printf("Se cargó correctamente el protagonista\n");
             menu_inicio(partida);
         }else{
+            system("clear");
             printf("Se produjo un error...\n");
+            menu_inicio(partida);
         }
         break;
 
@@ -85,10 +87,13 @@ void menu_inicio(batallas_pokemon_t* partida){
         agregar_gimnasio = gimnasio_agregar(partida);
         if(agregar_gimnasio == EXITO){
             printf("Se cargó correctamente el gimnasio\n");
-            printf("\n\n");
+            system("clear");
+            printf("Se cargó correctamente el gimnasio\n");
             menu_inicio(partida);
         }else{
+            system("clear");
             printf("Se produjo un error...\n");
+            menu_inicio(partida);
         }
         break;
     case 'I':

@@ -64,9 +64,9 @@ int main(){
     }
     
     batallas_cargar(nueva_partida->tipos);
+
     menu_inicio(nueva_partida);
-
-
+    
     liberar_todo(nueva_partida);
 
     return EXITO;
