@@ -53,7 +53,9 @@ personaje_t* protagonista_crear(char ruta_archivo[MAX_RUTA]){
         return NULL;
     }
 
-    return personaje_cargar(protagonista, mi_primer_pokemon,archivo_protagonista);
+    personaje_t* protagonista_cargado = personaje_cargar(protagonista,mi_primer_pokemon,archivo_protagonista);
+    fclose(archivo_protagonista);
+    return protagonista_cargado;
 }
 
 
@@ -161,8 +163,9 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
                 fclose(archivo_personaje);
                 return NULL;
             }
-            otro_pokemon = &aux_otro_pokemon;
+            *otro_pokemon = aux_otro_pokemon;
             lista_insertar(personaje->caja, otro_pokemon);
+            otro_pokemon = NULL;
             (personaje->cantidad_pokemones)++;
         }else{
             protagonista_destruir(personaje);
@@ -171,8 +174,6 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
         } 
         tipo = (char)fgetc(archivo_personaje);
     }
-
-    fclose(archivo_personaje);
     
     //Agrego a party
     estado_inicial_party(personaje, primer_pokemon);
@@ -187,7 +188,7 @@ personaje_t* personaje_cargar(personaje_t* personaje, pokemon_t* primer_pokemon,
  * Imprime el pokemon recibido por parámetro con sus características 
  */
 void mostrar_pokemon(pokemon_t* pokemon){
-    printf("%s        %i               %i          %i       %lu   \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa,pokemon->id);
+    printf("%-10s        %i             %i            %i           %lu   \n",pokemon->nombre,pokemon->velocidad,pokemon->ataque,pokemon->defensa,pokemon->id);
     printf("-----------------------------------------------------------------\n");
     printf("\n");
 }
@@ -201,7 +202,7 @@ void mostrar_pokemon_party(personaje_t* protagonista){
     lista_iterador_t* iterador_party = lista_iterador_crear(protagonista->party);
     printf("POKEMON EN PARTY:\n");
     printf("-----------------------------------------------------------------\n");
-    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        ID   \n");
+    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA        ID    \n");
     while(lista_iterador_tiene_siguiente(iterador_party)){
         pokemon_t* pokemon_actual_p = lista_iterador_elemento_actual(iterador_party);
         pokemon_actual_p->id = i;
@@ -241,6 +242,7 @@ void protagonista_mostrar(personaje_t* protagonista){
     printf("CANTIDAD DE MEDALLAS OBTENIDAS: %i\n",protagonista->mis_medallas);
     printf("\n");
     mostrar_pokemon_party(protagonista);
+    printf("\n");
     mostrar_pokemon_caja(protagonista);
     printf("✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩✩\n");
 }

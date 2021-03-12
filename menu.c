@@ -74,6 +74,8 @@ void menu_inicio(batallas_pokemon_t* partida){
         agregar_protagonista = protagonista_agregar(partida);
         if(agregar_protagonista == EXITO){
             printf("\nSe cargó correctamente el protagonista\n\n");
+            //protagonista_mostrar(partida->protagonista);
+            getchar();
             menu_inicio(partida);
         }else{
             error = true;
@@ -84,6 +86,8 @@ void menu_inicio(batallas_pokemon_t* partida){
         agregar_gimnasio = gimnasio_agregar(partida);
         if(agregar_gimnasio == EXITO){
             printf("\nSe cargó correctamente el gimnasio\n\n");
+            gimnasio_mostrar(partida->gimnasios->vector[0]);
+            getchar();
             menu_inicio(partida);
         }else{
             error = true;
@@ -92,6 +96,7 @@ void menu_inicio(batallas_pokemon_t* partida){
     case 'I':
         if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
             printf("\nNo se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n\n");
+            getchar();
             menu_inicio(partida);
         }else{
             printf("Comienza la aventura... ¿Estas listo?\n");
@@ -134,9 +139,9 @@ void menu_inicio(batallas_pokemon_t* partida){
 
     if(error){
         printf("\nSe produjo un error...\n\n");
-        menu_inicio(partida); 
-    }
-   
+        getchar();
+        menu_inicio(partida);
+    };
 
 }
 
@@ -189,6 +194,7 @@ void menu_gimnasio(batallas_pokemon_t* partida){
         break;
     default:
         printf("Hubo un error, intente nuevamente:\n");
+        getchar();
         menu_gimnasio(partida);
     };
 
@@ -239,6 +245,7 @@ void menu_batalla(batallas_pokemon_t* partida,personaje_t* protagonista, gimnasi
         protagonista_destruir(entrenador_oponente);
         lista_desapilar(gimnasio->miembros);
         printf("Y en el siguiente round...\n");
+        getchar();
         menu_batalla(partida,protagonista,gimnasio);
     }
 
@@ -294,6 +301,7 @@ void menu_victoria(batallas_pokemon_t* partida, personaje_t* protagonista, gimna
 
     default:
         printf("Hubo un error, intente nuevamente:\n");
+        getchar();
         menu_victoria(partida,protagonista,gimnasio);
     };
 }
@@ -330,6 +338,7 @@ void menu_derrota(batallas_pokemon_t* partida, personaje_t* protagonista, gimnas
         break;
     default:
         printf("Hubo un error, intente nuevamente:\n");
-        menu_victoria(partida,protagonista,gimnasio);
+        getchar();
+        menu_derrota(partida,protagonista,gimnasio);
     };
 }

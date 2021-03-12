@@ -78,6 +78,7 @@ personaje_t* creo_lider_y_leo_datos(FILE* archivo_gimnasio, gimnasio_t* gimnasio
         return NULL;
         }
 
+    protagonista_mostrar(lider_gimnasio);
     return lider_gimnasio;
 }
 
@@ -100,13 +101,13 @@ personaje_t* creo_entrenador_y_leo_datos(FILE* archivo_gimnasio, gimnasio_t* gim
     }
 
     entrenador_gimnasio = personaje_cargar(entrenador_gimnasio, su_primer_pokemon, archivo_gimnasio);
-    if (!entrenador_gimnasio){
+    if(!entrenador_gimnasio){
         free(entrenador_gimnasio);
         free(su_primer_pokemon);
-        gimnasio_destruir(gimnasio);
         fclose(archivo_gimnasio);
         return NULL;
     }
+   
     return entrenador_gimnasio;
 }
 
@@ -159,10 +160,16 @@ gimnasio_t* gimnasio_crear(char ruta_archivo[MAX_RUTA]){
         return NULL;
     }
 
+
     //Leo a los entrenadores y a sus pokemon
-    letra_leida = (char)fgetc(archivo_gimnasio);
+    
+    printf("%c",letra_leida);
     while(letra_leida == ENTRENADOR){
+        printf("hola");
         personaje_t* nuevo_entrenador =  creo_entrenador_y_leo_datos(archivo_gimnasio,nuevo_gimnasio);
+        if(!nuevo_entrenador){
+            return nuevo_gimnasio;
+        }
         lista_apilar(nuevo_gimnasio->miembros, nuevo_entrenador);
         
         letra_leida = (char)fgetc(archivo_gimnasio);

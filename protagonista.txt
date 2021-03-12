@@ -1,2 +1,4 @@
 E;Muchacho
 P;Chandelure;80;55;90
+P;Croagunk;40;51;33
+P;Primeape;70;20;88
