@@ -17,9 +17,9 @@
 int comparador(void* gim_1, void* gim_2){
     gimnasio_t* gimnasio_1 = (gimnasio_t*)gim_1;
     gimnasio_t* gimnasio_2 = (gimnasio_t*)gim_2;
-    if(gimnasio_1->dificultad > gimnasio_2->dificultad){
+    if(gimnasio_1->dificultad < gimnasio_2->dificultad){
         return 1;
-    }else if(gimnasio_1->dificultad < gimnasio_2->dificultad){
+    }else if(gimnasio_1->dificultad > gimnasio_2->dificultad){
         return -1;
     }else{
         return 0;

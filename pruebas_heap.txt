@@ -2,9 +2,9 @@
 #include "pa2mm.h"
 
 int comparador(void* cosa_1, void* cosa_2){
-    if(*(int*)cosa_1 > *(int*)cosa_2){
+    if(*(int*)cosa_1 < *(int*)cosa_2){
         return 1;
-    }else if(*(int*)cosa_1 < *(int*)cosa_2){
+    }else if(*(int*)cosa_1 > *(int*)cosa_2){
         return -1;
     }else{
         return 0;

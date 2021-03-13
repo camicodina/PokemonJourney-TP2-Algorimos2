@@ -37,7 +37,7 @@ void sift_up(heap_t* heap, size_t pos_nuevo){
     if(pos_nuevo == 0) return;
     size_t pos_padre = (pos_nuevo-1)/2;
     int comparacion = heap->comparador(heap->vector[pos_nuevo],heap->vector[pos_padre]);
-    if(comparacion == -1){ // Si 1er elemento es menor al segundo
+    if(comparacion == 1){ // Si 1er elemento es menor al segundo
         void* pos_aux = heap->vector[pos_nuevo];
         heap->vector[pos_nuevo] = heap->vector[pos_padre];
         heap->vector[pos_padre] = pos_aux;
@@ -79,11 +79,11 @@ void sift_down(heap_t* heap, size_t pos_elemento){
 	size_t pos_del_menor = pos_izquierda;
 
 	if(pos_derecha < heap->tope){
-        if(heap->comparador(heap->vector[pos_izquierda], heap->vector[pos_derecha]) == 1){
+        if(heap->comparador(heap->vector[pos_izquierda], heap->vector[pos_derecha]) == -1){
             pos_del_menor = pos_derecha;
         }
     }
-	if(heap->comparador(heap->vector[pos_elemento], heap->vector[pos_del_menor]) == 1){
+	if(heap->comparador(heap->vector[pos_elemento], heap->vector[pos_del_menor]) == -1){
         void* pos_aux = heap->vector[pos_elemento];
         heap->vector[pos_elemento] = heap->vector[pos_del_menor];
         heap->vector[pos_del_menor] = pos_aux;
@@ -99,12 +99,10 @@ void sift_down(heap_t* heap, size_t pos_elemento){
 int heap_borrar_minimal(heap_t* heap){
     if(!heap) return FALLA;
     if(heap_vacio(heap)) return FALLA;
-    void* raiz = heap_raiz(heap);
-    void* ultimo = heap->vector[heap->tope-1];
 
-    if(heap->tope == 1){
+    if(heap_elementos(heap) == 1){
         if(heap->destructor){
-            heap->destructor(raiz);
+            heap->destructor(heap->vector[0]);
         }
         free(heap->vector); 
         heap->vector = NULL;
@@ -112,18 +110,19 @@ int heap_borrar_minimal(heap_t* heap){
         return EXITO;
     }
 
-    void** vector = realloc(heap->vector, sizeof(void**)*((size_t)heap->tope-1));
+    void* ultimo = heap->vector[heap->tope-1];
+    void* vector = realloc(heap->vector, sizeof(void*)*((size_t)heap->tope-1));
     if(!vector) return -1;
     heap->vector = vector;
     if(heap->destructor){
-        heap->destructor(raiz);
+        heap->destructor(heap->vector[0]);
     }
-    raiz=ultimo;
+    heap->vector[0] = ultimo;
 	(heap->tope)--;
-	if(heap->tope > 0){
+	if(heap->tope > 1){
         sift_down(heap, 0);
     }
-	return EXITO;
+	return EXITO; 
 }
 
 

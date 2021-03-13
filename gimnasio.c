@@ -35,80 +35,51 @@ void batallas_cargar(funcion_batalla* batallas){
  * Función auxiliar para la lectura de los datos del gimnasio.
  */
 gimnasio_t* creo_gimnasio_y_leo_datos(FILE* archivo_gimnasio){
-    gimnasio_t* gimnasio = calloc(1,sizeof(gimnasio_t));
-    if(!gimnasio){
-        fclose(archivo_gimnasio);
+    gimnasio_t* nuevo_gimnasio = calloc(1,sizeof(gimnasio_t));
+    if(!nuevo_gimnasio){
         return NULL;
     }
 
-    int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO,gimnasio->nombre,&(gimnasio->dificultad),&(gimnasio->id_puntero_funcion));
+    int primera_linea_leida = fscanf(archivo_gimnasio, FORMATO_LECTURA_GIMNASIO,nuevo_gimnasio->nombre,&(nuevo_gimnasio->dificultad),&(nuevo_gimnasio->id_puntero_funcion));
     if(!primera_linea_leida || primera_linea_leida != 3){
-        fclose(archivo_gimnasio);
-        free(gimnasio);
+        free(nuevo_gimnasio);
         return NULL;
     }
-    return gimnasio;
+    return nuevo_gimnasio;
 }
 
+personaje_t* leer_nombre_y_primer_pokemon(FILE* archivo_gimnasio, gimnasio_t* nuevo_gimnasio, personaje_t* personaje_gimnasio, pokemon_t* primer_pokemon){
 
-/*
- * Función auxiliar para la lectura de los datos del lider.
- */
-personaje_t* creo_lider_y_leo_datos(FILE* archivo_gimnasio, gimnasio_t* gimnasio){
-    personaje_t* lider_gimnasio = calloc(1,sizeof(personaje_t));
-    if(!lider_gimnasio){
-        gimnasio_destruir(gimnasio);
+    //Leo primera linea: nombre
+    leo_nombre_personaje(personaje_gimnasio,primer_pokemon,archivo_gimnasio);
+
+    //Leo segunda linea: primer pokemon
+    leo_primer_pokemon(personaje_gimnasio,primer_pokemon,archivo_gimnasio);
+
+    //Creo las listas party y caja. Agrego primer pokemon a caja del lider (conjunto de poke obtenidos).
+    personaje_gimnasio->caja = lista_crear();
+    if(!personaje_gimnasio->caja){
+        free(primer_pokemon);
+        free(personaje_gimnasio);
+        gimnasio_destruir(nuevo_gimnasio);
         fclose(archivo_gimnasio);
         return NULL;
     }
-    pokemon_t* primer_pokemon_lider = calloc(1,sizeof(pokemon_t));
-    if(!primer_pokemon_lider){
-        gimnasio_destruir(gimnasio);
-        free(lider_gimnasio);
-        fclose(archivo_gimnasio);
-        return NULL;
-    }
-
-    lider_gimnasio = personaje_cargar(lider_gimnasio, primer_pokemon_lider, archivo_gimnasio);
-    if(!lider_gimnasio){
-        free(lider_gimnasio);
-        free(primer_pokemon_lider);
-        gimnasio_destruir(gimnasio);
-        fclose(archivo_gimnasio);
-        return NULL;
-        }
-
-    protagonista_mostrar(lider_gimnasio);
-    return lider_gimnasio;
-}
-
-/*
- * Función auxiliar para la lectura de los datos de un entrenador.
- */
-personaje_t* creo_entrenador_y_leo_datos(FILE* archivo_gimnasio, gimnasio_t* gimnasio){
-    personaje_t* entrenador_gimnasio = calloc(1,sizeof(personaje_t));
-    if(!entrenador_gimnasio){
-        gimnasio_destruir(gimnasio);
-        fclose(archivo_gimnasio);
-        return NULL;
-    }
-    pokemon_t* su_primer_pokemon= calloc(1,sizeof(pokemon_t));
-    if(!su_primer_pokemon){
-        free(entrenador_gimnasio);
-        gimnasio_destruir(gimnasio);
+    
+    personaje_gimnasio->party = lista_crear();
+    if(!personaje_gimnasio->party){
+        free(primer_pokemon);
+        free(personaje_gimnasio);
+        lista_destruir(personaje_gimnasio->caja);
+        gimnasio_destruir(nuevo_gimnasio);
         fclose(archivo_gimnasio);
         return NULL;
     }
 
-    entrenador_gimnasio = personaje_cargar(entrenador_gimnasio, su_primer_pokemon, archivo_gimnasio);
-    if(!entrenador_gimnasio){
-        free(entrenador_gimnasio);
-        free(su_primer_pokemon);
-        fclose(archivo_gimnasio);
-        return NULL;
-    }
-   
-    return entrenador_gimnasio;
+    lista_insertar(personaje_gimnasio->caja,primer_pokemon);
+    (personaje_gimnasio->cantidad_pokemones)++;
+
+    return personaje_gimnasio;
 }
 
 
@@ -129,53 +100,129 @@ gimnasio_t* gimnasio_crear(char ruta_archivo[MAX_RUTA]){
         fclose(archivo_gimnasio);
         return NULL;
     }
-    gimnasio_t* nuevo_gimnasio = creo_gimnasio_y_leo_datos(archivo_gimnasio);
-    if(!nuevo_gimnasio){
-        fclose(archivo_gimnasio);
-        return NULL;
-    }
+    gimnasio_t* gimnasio = creo_gimnasio_y_leo_datos(archivo_gimnasio);
+
 
     //Reservo memoria para el lider y leo sus datos
     letra_leida = (char)fgetc(archivo_gimnasio);
     if(letra_leida != LIDER){
+        gimnasio_destruir(gimnasio);
         fclose(archivo_gimnasio);
-        gimnasio_destruir(nuevo_gimnasio);
+        return NULL;
+    }
+    personaje_t* lider_gimnasio = calloc(1,sizeof(personaje_t));
+    if(!lider_gimnasio){
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
+        return NULL;
+    }
+    pokemon_t* primer_pokemon_lider = calloc(1,sizeof(pokemon_t));
+    if(!primer_pokemon_lider){
+        free(lider_gimnasio);
+        gimnasio_destruir(gimnasio);
+        fclose(archivo_gimnasio);
         return NULL;
     }
 
-    personaje_t* nuevo_lider = creo_lider_y_leo_datos(archivo_gimnasio,nuevo_gimnasio);
-    if(!nuevo_lider){
-        fclose(archivo_gimnasio);
-        gimnasio_destruir(nuevo_gimnasio);
-        return NULL;
+    //Agrego el nombre y el primer pokemon del lider
+    lider_gimnasio = leer_nombre_y_primer_pokemon(archivo_gimnasio,gimnasio,lider_gimnasio,primer_pokemon_lider);
+
+    //Leo y agrego el resto de pokemon del lider en caso de haberlos
+    pokemon_t aux_otro_pokemon;
+    letra_leida = (char)fgetc(archivo_gimnasio);
+    while(letra_leida == POKEMON){
+        int pokemon_leido = fscanf(archivo_gimnasio, FORMATO_LECTURA_POKEMON,aux_otro_pokemon.nombre, &(aux_otro_pokemon.velocidad), &(aux_otro_pokemon.ataque), &(aux_otro_pokemon.defensa));
+        if(pokemon_leido == 4){
+            pokemon_t* otro_pokemon = calloc(1,sizeof(pokemon_t));
+            if(!otro_pokemon){
+                protagonista_destruir(lider_gimnasio);
+                gimnasio_destruir(gimnasio);
+                fclose(archivo_gimnasio);
+                return NULL;
+            }
+            *otro_pokemon = aux_otro_pokemon;
+            lista_insertar(lider_gimnasio->caja, otro_pokemon);
+            otro_pokemon = NULL;
+            (lider_gimnasio->cantidad_pokemones)++;
+        }else{
+            protagonista_destruir(lider_gimnasio);                
+            gimnasio_destruir(gimnasio);
+            fclose(archivo_gimnasio);
+            return NULL;
+        } 
+        letra_leida = (char)fgetc(archivo_gimnasio);
     }
-    nuevo_gimnasio->lider = nuevo_lider;
+    
+    //Agrego a party
+    estado_inicial_party(lider_gimnasio, primer_pokemon_lider);
+    
+    //Asigno al gimnasio el lider creado
+    gimnasio->lider = lider_gimnasio;
 
 
     //Creo pila (lista) de entrenadores y apilo al lider.
-    nuevo_gimnasio->miembros = lista_crear();
-    if (!nuevo_gimnasio->miembros){
+    gimnasio->miembros = lista_crear();
+    if (!gimnasio->miembros){
         fclose(archivo_gimnasio);
-        gimnasio_destruir(nuevo_gimnasio);
+        gimnasio_destruir(gimnasio);
         return NULL;
     }
 
 
     //Leo a los entrenadores y a sus pokemon
+    if(letra_leida != ENTRENADOR){ //Caso: gimnasio sin entrenadores
+        fclose(archivo_gimnasio);
+        return gimnasio;
+    }
     
-    printf("%c",letra_leida);
     while(letra_leida == ENTRENADOR){
-        printf("hola");
-        personaje_t* nuevo_entrenador =  creo_entrenador_y_leo_datos(archivo_gimnasio,nuevo_gimnasio);
-        if(!nuevo_entrenador){
-            return nuevo_gimnasio;
+        personaje_t* entrenador_gimnasio = calloc(1,sizeof(personaje_t));
+        if(!entrenador_gimnasio){
+            fclose(archivo_gimnasio);
+            return gimnasio;
         }
-        lista_apilar(nuevo_gimnasio->miembros, nuevo_entrenador);
-        
+        pokemon_t* su_primer_pokemon= calloc(1,sizeof(pokemon_t));
+        if(!su_primer_pokemon){
+            free(entrenador_gimnasio);
+            fclose(archivo_gimnasio);
+            return gimnasio;
+        }
+
+        entrenador_gimnasio = leer_nombre_y_primer_pokemon(archivo_gimnasio,gimnasio,entrenador_gimnasio,su_primer_pokemon);
+
+        //Leo y agrego el resto de pokemon en caso de haberlos
+        pokemon_t aux_otro_pokemon;
         letra_leida = (char)fgetc(archivo_gimnasio);
+        while(letra_leida == POKEMON){
+            int pokemon_leido = fscanf(archivo_gimnasio, FORMATO_LECTURA_POKEMON,aux_otro_pokemon.nombre, &(aux_otro_pokemon.velocidad), &(aux_otro_pokemon.ataque), &(aux_otro_pokemon.defensa));
+            if(pokemon_leido == 4){
+                pokemon_t* otro_pokemon = calloc(1,sizeof(pokemon_t));
+                if(!otro_pokemon){
+                    protagonista_destruir(entrenador_gimnasio);
+                    fclose(archivo_gimnasio);
+                    return gimnasio;
+                }
+                *otro_pokemon = aux_otro_pokemon;
+                lista_insertar(entrenador_gimnasio->caja, otro_pokemon);
+                otro_pokemon = NULL;
+                (entrenador_gimnasio->cantidad_pokemones)++;
+            }else{
+                protagonista_destruir(entrenador_gimnasio);
+                fclose(archivo_gimnasio);
+                return gimnasio;;
+            } 
+            letra_leida = (char)fgetc(archivo_gimnasio);
+        }
+        
+        //Agrego a party
+        estado_inicial_party(entrenador_gimnasio, su_primer_pokemon);
+
+        //Apilo entrenador en lista de entrenadores
+        lista_apilar(gimnasio->miembros, entrenador_gimnasio);
     }
 
-    return nuevo_gimnasio;
+    fclose(archivo_gimnasio);
+    return gimnasio;
 }
 
 
@@ -215,9 +262,15 @@ void gimnasio_mostrar(gimnasio_t* gimnasio){
  * Muestra los dos pokemon que se enfrentan en el combate del siglo.
  */
 void mostrar_combate_informacion(pokemon_t* pokemon_protagonista, pokemon_t* pokemon_oponente){
-    printf("%s        %i               %i          %i       \n",pokemon_protagonista->nombre,pokemon_protagonista->velocidad,pokemon_protagonista->ataque,pokemon_protagonista->defensa);
-    printf("Se enfrenta al temerario...");
-    printf("%s        %i               %i          %i       \n",pokemon_oponente->nombre,pokemon_oponente->velocidad,pokemon_oponente->ataque,pokemon_oponente->defensa);
+    printf("\n---------------------------------------------------------\n");
+    printf("NOMBRE        VELOCIDAD        ATAQUE        DEFENSA      \n");
+    printf("%-10s        %i             %i            %i            \n",pokemon_protagonista->nombre,pokemon_protagonista->velocidad,pokemon_protagonista->ataque,pokemon_protagonista->defensa);
+    printf("---------------------------------------------------------\n");
+    printf("\nSe enfrenta al temerario...\n");
+    printf("\n---------------------------------------------------------\n");
+    printf("%-10s        %i             %i            %i            \n",pokemon_oponente->nombre,pokemon_oponente->velocidad,pokemon_oponente->ataque,pokemon_oponente->defensa);
+    printf("\n---------------------------------------------------------\n");
+    printf("\n");
 }
 
 

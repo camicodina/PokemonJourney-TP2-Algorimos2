@@ -43,6 +43,24 @@ typedef struct personaje{
 // -------------------------- FUNCIONES -------------------------- //
 
 /*
+ * Función auxiliar para la lectura del nombre del entrenador/lider/protagonista.
+ */
+personaje_t* leo_nombre_personaje(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje);
+
+/*
+ * Función auxiliar para la lectura del primer pokemon que posee el 
+ * entrenador/lider/protagonista.
+ */
+pokemon_t* leo_primer_pokemon(personaje_t* personaje, pokemon_t* primer_pokemon, FILE* archivo_personaje);
+
+
+/*
+ * Función auxiliar para crear el conjunto de pokemon para combarir inicial.
+ */
+void estado_inicial_party(personaje_t* personaje, pokemon_t* primer_pokemon);
+
+
+/*
  * Función que, dado el archivo del protagonista o de un gimnasio, reserva la memoria 
  * necesaria para la creación de un entrenador.
  * Devuelve al entrenador o NULL en caso de error.

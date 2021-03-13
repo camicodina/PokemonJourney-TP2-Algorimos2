@@ -74,7 +74,6 @@ void menu_inicio(batallas_pokemon_t* partida){
         agregar_protagonista = protagonista_agregar(partida);
         if(agregar_protagonista == EXITO){
             printf("\nSe cargó correctamente el protagonista\n\n");
-            //protagonista_mostrar(partida->protagonista);
             getchar();
             menu_inicio(partida);
         }else{
@@ -86,7 +85,6 @@ void menu_inicio(batallas_pokemon_t* partida){
         agregar_gimnasio = gimnasio_agregar(partida);
         if(agregar_gimnasio == EXITO){
             printf("\nSe cargó correctamente el gimnasio\n\n");
-            gimnasio_mostrar(partida->gimnasios->vector[0]);
             getchar();
             menu_inicio(partida);
         }else{
@@ -100,36 +98,22 @@ void menu_inicio(batallas_pokemon_t* partida){
             menu_inicio(partida);
         }else{
             printf("Comienza la aventura... ¿Estas listo?\n");
+            getchar();
+            system("clear");
             menu_gimnasio(partida);
         }
         break;
 
     case 'S':
-        partida->es_simulacion = true;
-        gimnasio_t* gimnasio_1 = gimnasio_crear("gimnasios/gimnasio_1.txt");
-        gimnasio_t* gimnasio_2 = gimnasio_crear("gimnasios/gimnasio_2.txt");
-        gimnasio_t* gimnasio_3 = gimnasio_crear("gimnasios/gimnasio_3.txt");
-        gimnasio_t* gimnasio_4 = gimnasio_crear("gimnasios/gimnasio_4.txt");
-        gimnasio_t* gimnasio_5 = gimnasio_crear("gimnasios/gimnasio_5.txt");
-        gimnasio_t* gimnasio_6 = gimnasio_crear("gimnasios/gimnasio_6.txt");
-        gimnasio_t* gimnasio_7 = gimnasio_crear("gimnasios/gimnasio_7.txt");
-        gimnasio_t* gimnasio_8 = gimnasio_crear("gimnasios/gimnasio_8.txt");
-
-        heap_insertar(partida->gimnasios, gimnasio_1);
-        heap_insertar(partida->gimnasios, gimnasio_2);
-        heap_insertar(partida->gimnasios, gimnasio_3);
-        heap_insertar(partida->gimnasios, gimnasio_4);
-        heap_insertar(partida->gimnasios, gimnasio_5);
-        heap_insertar(partida->gimnasios, gimnasio_6);
-        heap_insertar(partida->gimnasios, gimnasio_7);
-        heap_insertar(partida->gimnasios, gimnasio_8);
-        // if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
-        //     printf("\nNo se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n\n");
-        //     menu_inicio(partida);
-        // }else{
-        //     printf("¡Mira como se desencadena una batalla legendaria!\n");
-        //     menu_simulacion(partida);
-        // }
+        if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
+            printf("\nNo se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n\n");
+            getchar();
+            menu_inicio(partida);
+        }else{
+            printf("¡Mira como se desencadena una batalla legendaria!\n");
+            getchar();
+            menu_simulacion(partida);
+        }
         break;
     case 'X':
         break;
@@ -171,7 +155,7 @@ void menu_gimnasio(batallas_pokemon_t* partida){
     printf("¿Que hacemos ahora?\n");
     printf("E - Ver informacion tuya\n");
     printf("G - Ver informacion del gimnasio\n");
-    printf("C - Cambiar los pokemon de batalla");
+    printf("C - Cambiar los pokemon de batalla\n");
     printf("B - Realiza la proxima batalla planificada\n");
     printf("X para salir del menu\n");
     scanf("%c", &eleccion);
@@ -179,15 +163,22 @@ void menu_gimnasio(batallas_pokemon_t* partida){
     switch(eleccion){
     case 'E':
         protagonista_mostrar(jugador);
+        getchar();
+        menu_gimnasio(partida);
         break;
     case 'G':
         gimnasio_mostrar(gimnasio_actual);
+        getchar();
+        menu_gimnasio(partida);
         break;
     case 'C':
         cambios_party_caja(jugador);
+        getchar();
+        menu_gimnasio(partida);
         break;
     case 'B':
         printf("VAMOS QUE VOS PODES\n");
+        getchar();
         menu_batalla(partida,jugador,gimnasio_actual);
         break;
     case 'X':
@@ -245,7 +236,6 @@ void menu_batalla(batallas_pokemon_t* partida,personaje_t* protagonista, gimnasi
         protagonista_destruir(entrenador_oponente);
         lista_desapilar(gimnasio->miembros);
         printf("Y en el siguiente round...\n");
-        getchar();
         menu_batalla(partida,protagonista,gimnasio);
     }
 
@@ -276,15 +266,19 @@ void menu_victoria(batallas_pokemon_t* partida, personaje_t* protagonista, gimna
     printf("¿Como festejamos la victoria?\n");
     printf("T - Pedir prestado Pokemon de lider\n");
     printf("C - Cambiar Pokemon de batalla\n");
-    printf("N - Proximo gimnasio");
+    printf("N - Proximo gimnasio\n");
     scanf("%c", &eleccion);
 
     switch(eleccion){
     case 'T':
         pedir_prestado(protagonista, gimnasio->lider);
+        getchar();
+        menu_victoria(partida,protagonista,gimnasio);
         break;
     case 'C':
         cambios_party_caja(protagonista);
+        getchar();
+        menu_victoria(partida,protagonista,gimnasio);
         break;
     case 'N':
         heap_borrar_minimal(partida->gimnasios);
@@ -292,9 +286,11 @@ void menu_victoria(batallas_pokemon_t* partida, personaje_t* protagonista, gimna
              printf("No hay mas gimnasios... ¡HA COMPLETADO EL JUEGO!\n");
              printf("¡Ahora si que eres un verdadero maestro pokemon!\n");
              printf("Esperamos que el juego te haya servido y quieras ser uno de verdad :D\n");
+             getchar();
              menu_inicio(partida);
         }else{
             printf("Adelante!\n");
+            getchar();
             menu_gimnasio(partida);
         }
         break;
@@ -321,19 +317,23 @@ void menu_derrota(batallas_pokemon_t* partida, personaje_t* protagonista, gimnas
     printf("¿Y ahora que hacemos?\n");
     printf("C - Cambiar Pokemon de batalla\n");
     printf("R - Reintentar batalla \n");
-    printf("F - Finalizar");
+    printf("F - Finalizar\n");
     scanf("%c", &eleccion);
 
     switch(eleccion){
     case 'C':
         cambios_party_caja(protagonista);
+        getchar();
+        menu_derrota(partida,protagonista,gimnasio);
         break;
     case 'R':
+        getchar();
         menu_batalla(partida,protagonista,gimnasio);
         break;
     case 'F':
         printf("Has perdido ante el gimnasio %s \n", gimnasio->nombre);
         printf("A la proxima sera... \n");
+        getchar();
         menu_inicio(partida);
         break;
     default:

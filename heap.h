@@ -11,8 +11,8 @@
 
 /*
  * Comparador de elementos. Recibe dos elementos del arbol y devuelve
- * 0 en caso de ser iguales, 1 si el primer elemento es mayor al
- * segundo o -1 si el primer elemento es menor al segundo.
+ * 0 en caso de ser iguales, 1 si el primer elemento es menor al
+ * segundo o -1 si el primer elemento es mayor al segundo.
  */
 typedef int (*heap_comparador)(void*, void*);
 
