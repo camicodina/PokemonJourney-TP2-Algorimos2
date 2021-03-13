@@ -105,6 +105,7 @@ void menu_inicio(batallas_pokemon_t* partida){
         break;
 
     case 'S':
+        partida->es_simulacion = true;
         if(!partida->protagonista || heap_elementos(partida->gimnasios) != 8){
             printf("\nNo se cumplen los requisitos minimos. Por favor cargue los 8 gimnasios y al protagonista.\n\n");
             getchar();
