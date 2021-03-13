@@ -307,17 +307,22 @@ int pedir_prestado(personaje_t* protagonista, personaje_t* oponente){
     if(id_prestado <= (oponente->cantidad_pokemones)){
         if(id_prestado == 0) return FALLA;
         size_t posicion_prestado = id_prestado-1;
-        pokemon_t* aux_pokemon_prestado = (pokemon_t*)(lista_elemento_en_posicion(oponente->caja,posicion_prestado));
-        pokemon_t* pokemon_prestado = calloc(1,sizeof(pokemon_t));
-        if(!pokemon_prestado) return -1;
-        pokemon_prestado = aux_pokemon_prestado;
+        pokemon_t* pokemon_a_prestar = (pokemon_t*)(lista_elemento_en_posicion(oponente->caja,posicion_prestado));
+        
+        pokemon_t* copia_pokemon_a_prestar = calloc(1,sizeof(pokemon_t));
+        if(!copia_pokemon_a_prestar) return FALLA;
+        strcpy(copia_pokemon_a_prestar->nombre, pokemon_a_prestar->nombre);
+        copia_pokemon_a_prestar->velocidad = pokemon_a_prestar->velocidad;
+        copia_pokemon_a_prestar->ataque = pokemon_a_prestar->ataque;
+        copia_pokemon_a_prestar->defensa = pokemon_a_prestar->defensa;
+        copia_pokemon_a_prestar->nivel = pokemon_a_prestar->nivel;
 
-        lista_insertar(protagonista->caja, pokemon_prestado);
+        lista_insertar(protagonista->caja, copia_pokemon_a_prestar);
         printf("Completado!\n");
-        return 0;
+        return EXITO;
     }else{
         printf("Hubo un error\n");
-        return -1;
+        return FALLA;
     }
 }
 

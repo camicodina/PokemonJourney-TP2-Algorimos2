@@ -346,6 +346,7 @@ int cambios_party_caja(personaje_t* protagonista){
         break;
     default:
         printf("Hubo un error, intente nuevamente:\n");
+        getchar();
         cambios_party_caja(protagonista);
     };
 

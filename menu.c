@@ -137,6 +137,7 @@ void menu_simulacion(batallas_pokemon_t* partida){
     if(jugador->mis_medallas < 8){
         printf("¡Bienvenido a Gimnasio %s !\n",gimnasio_actual->nombre);
         printf("Comienza la batalla...\n");
+        getchar();
         menu_batalla(partida,jugador,gimnasio_actual);
     }
 }
@@ -231,14 +232,16 @@ void menu_batalla(batallas_pokemon_t* partida,personaje_t* protagonista, gimnasi
         lista_iterador_destruir(iterador_protagonista);
         lista_iterador_destruir(iterador_oponente);
         if(es_lider){
+            getchar();
             menu_victoria(partida,protagonista,gimnasio);
         }
         protagonista_destruir(entrenador_oponente);
         lista_desapilar(gimnasio->miembros);
         printf("Y en el siguiente round...\n");
+        getchar();
         menu_batalla(partida,protagonista,gimnasio);
     }
-
+    getchar();
     menu_derrota(partida,protagonista,gimnasio);
 }
 
@@ -255,9 +258,11 @@ void menu_victoria(batallas_pokemon_t* partida, personaje_t* protagonista, gimna
         heap_borrar_minimal(partida->gimnasios);
         if(heap_vacio(partida->gimnasios) && protagonista->mis_medallas == 8){
              printf("No hay mas gimnasios... ¡TERMINA EL JUEGO!\n");
+             getchar();
              menu_inicio(partida);
         }else{
             printf("Adelante!\n");
+            getchar();
             menu_simulacion(partida);
         }
     }
@@ -309,6 +314,7 @@ void menu_derrota(batallas_pokemon_t* partida, personaje_t* protagonista, gimnas
     
     if(partida->es_simulacion){
         printf("Has perdido ante el gran gimnasio de %s \n", gimnasio->lider->nombre);
+        getchar();
         menu_inicio(partida);
     }
     

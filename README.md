@@ -24,9 +24,20 @@ Durante la elaboración del trabajo también se utilizó valgrind para la depura
 > $ valgrind --leak-check=full --track-origins=yes --show-reachable=yes ./aventura_pokemon 
 
 
+## Instrucciones 🦆
+
+Una vez inicializado el programa se le presentará un menú inicial.
+Para poder comenzar a jugar debe cargarse un archivo con los datos del juegador principal (de referencia, puede ver un ejemplo en la carpeta "protagonistas") y 8 gimnasios (puede encontrar los default en la carpeta gimnacios).
+
+Hay dos formas de acceder al juego: mediante una simulación que recorre los gimnasios cargados sin pedir input del usuario o jugando!
+
+Una vez vencidos los 8 gimnasios, finaliza el juego. 
+
+
 ## Contruido con... ⚙
 
-TDAs principales_
+_TDAs principales_
+
 - TDA Heap --> Usado para garantizar los niveles ascendentes en los gimnasios.
 - TDA Lista --> Usado para almacenar los pokemones en los conjuntos party y caja. 
                 También es usado para almacenar los entrenadores en un gimnasio.
@@ -34,9 +45,11 @@ TDAs principales_
 
 Los archivos principales son:
 
-- protagonista_y_pokemon donde se declaran las funciones para operar sobre los mismos.
-- gimnasio que a partir del archivo anterior y batalla se encarga de crear el gimnasio y crear la logica del juego.
-- main contiene los menues y llama a las funciones para ejecutar el juego.
+- batalla.c --> donde se declaran los criterios para ganar o perder ante los gimnasios.
+- protagonista_y_pokemon.c --> donde se declaran las funciones para operar sobre los mismos.
+- gimnasio.c --> donde a partir del archivo anterior y batalla.c se encarga de crear el gimnasio y gestionar la logica del juego.
+- menu.c --> llama a los archivos con la lógica del juego y organiza los menúes.
+- main.c --> llama a menu.c para ejecutar todas las funciones del juego.
 
 ---
 
