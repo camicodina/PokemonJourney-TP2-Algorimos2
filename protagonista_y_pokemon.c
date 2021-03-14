@@ -329,7 +329,7 @@ int cambios_party_caja(personaje_t* protagonista){
             pokemon_t* aux_pokemon_a_agregar = (pokemon_t*)(lista_elemento_en_posicion(protagonista->caja,posicion_a_agregar));
             int ya_estaba = recorrer_party(protagonista,aux_pokemon_a_agregar);
             if((ya_estaba==EXITO) && (lista_elementos(protagonista->party) < 6)){
-                 lista_insertar(protagonista->caja, aux_pokemon_a_agregar);
+                 lista_insertar(protagonista->party, aux_pokemon_a_agregar);
             }else{
                 printf("Hubo un error\n");
                 return FALLA;
